@@ -1,0 +1,59 @@
+body {
+	background-color: #f9daa0;
+}
+
+h2 {
+	text-align: center;
+	color:		blue;
+}
+
+#organiHeader {
+	text-decoration:	underline;
+}
+
+.nav {
+	background-color: #eec881;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.navies {
+	float: left;
+	margin-right: 50px;
+}
+
+#menuBar {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#menuBar li {
+	display: inline;
+	padding: .2em 1em;
+}
+
+#tempDiv {
+	float:left;
+	height: 1700px;
+	padding: 10px;
+	width: 70%;
+	font-size: 18px;
+	
+}
+
+nav {
+	background-color: #eec881;
+	padding: 5px;
+	line-height:20px;
+	width:200px;
+	height: 2500px;
+	float:left;
+}
+
+footer {
+	background-color:black;
+    color:white;
+    clear:both;
+    text-align:center;
+    padding:5px;
+}
