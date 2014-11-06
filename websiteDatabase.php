@@ -287,9 +287,9 @@ function gel(id) {
 Website Database</h2>
 <div class="nav">
 <ul id="menuBar">
-<li onclick="createRetrieveWebsites(&quot;tempDiv&quot;)">
+<li class="menuButton" onclick="createRetrieveWebsites(&quot;tempDiv&quot;)">
 Retrieve Websites</li>
-<li onclick="createSaveWebsite(&quot;tempDiv&quot;)">
+<li class="menuButton" onclick="createSaveWebsite(&quot;tempDiv&quot;)">
 Save Website</li>
 </ul>
 </div>

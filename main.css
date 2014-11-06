@@ -21,9 +21,8 @@ h3 {
 	padding-bottom: 5px;
 }
 
-.navies {
-	float: left;
-	margin-right: 50px;
+.menuButton {
+	cursor:pointer;
 }
 
 #menuBar {

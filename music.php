@@ -109,9 +109,9 @@ Music</h2>
 <br>
 <div class="nav">
 <ul id="menuBar">
-<li onclick="createListeningTo(&quot;tempDiv&quot;)">
+<li class="menuButton" onclick="createListeningTo(&quot;tempDiv&quot;)">
 What I'm Listening to Now</li>
-<li onclick="createSaveAlbums(&quot;tempDiv&quot;)">
+<li class="menuButton" onclick="createSaveAlbums(&quot;tempDiv&quot;)">
 Save Albums</li>
 </ul>
 </div>

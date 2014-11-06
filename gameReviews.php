@@ -69,74 +69,74 @@ function createRetrieveReviews(id) {
 Game Reviews</h2>
 <div class="nav">
 <ul id="menuBar">
-<li onclick="">
+<li class="menuButton" onclick="">
 Main</li>
-<li onclick="createRetrieveReviews(&quot;tempDiv&quot;)">
+<li class="menuButton" onclick="createRetrieveReviews(&quot;tempDiv&quot;)">
 Search Reviews</li>
-<li onclick="createWriteReview(&quot;tempDiv&quot;)">
+<li class="menuButton" onclick="createWriteReview(&quot;tempDiv&quot;)">
 Write Review</li>
 </ul>
 </div>
 <br><br>
 <nav>
-Difficulty<br>
+<span style="cursor:pointer;" onclick="">Difficulty</span><br>
 <img src="/GamePictures/4outof5.png"></img><br>
-Graphics<br>
+<span style="cursor:pointer;" onclick="">Graphics</span><br>
 <img src="/GamePictures/3outof5.png"></img><br>
-Atmosphere<br>
+<span style="cursor:pointer;" onclick="">Atmosphere</span><br>
 <img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;Style<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Style</span><br>
 &emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;Setting<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Setting</span><br>
 &emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;Sound<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Sound</span><br>
 &emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
 <br>
-Story<br>
+<span style="cursor:pointer;" onclick="">Story</span><br>
 <img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;Pacing<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Pacing</span><br>
 &emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
-&emsp;&emsp;Narrative<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Narrative</span><br>
 &emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;Consistency<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Consistency</span><br>
 &emsp;&emsp;<img src="/GamePictures/0outof5.png"></img><br>
-&emsp;&emsp;Literary merit<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Literary merit</span><br>
 &emsp;&emsp;<img src="/GamePictures/1outof5.png"></img><br>
-&emsp;&emsp;Characters<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Characters</span><br>
 &emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
 <br>
-Engine<br>
+<span style="cursor:pointer;" onclick="">Engine</span><br>
 <img src="/GamePictures/3outof5.png"></img><br>
-&emsp;&emsp;Physics<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Physics</span><br>
 &emsp;&emsp;<img src="/GamePictures/0outof5.png"></img><br>
-&emsp;&emsp;Latency<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Latency</span><br>
 &emsp;&emsp;<img src="/GamePictures/0outof5.png"></img><br>
 <br>
-Systems<br>
+<span style="cursor:pointer;" onclick="">Systems</span><br>
 <img src="/GamePictures/0outof5.png"></img><br>
-&emsp;&emsp;UI<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">UI</span><br>
 &emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
-&emsp;&emsp;Progress<br>
-&emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
-<br>
-Gameplay<br>
-<img src="/GamePictures/4outof5.png"></img><br>
-&emsp;&emsp;AI<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Progress</span><br>
 &emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
 <br>
-Originality<br>
+<span style="cursor:pointer;" onclick="">Gameplay</span><br>
 <img src="/GamePictures/4outof5.png"></img><br>
-As Promised<br>
-<img src="/GamePictures/0outof5.png"></img><br>
-Impact<br>
-<img src="/GamePictures/0outof5.png"></img><br>
-Value<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">AI</span><br>
+&emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
+<br>
+<span style="cursor:pointer;" onclick="">Originality</span><br>
 <img src="/GamePictures/4outof5.png"></img><br>
-&emsp;&emsp;Dollars<br>
+<span style="cursor:pointer;" onclick="">As Promised</span><br>
+<img src="/GamePictures/0outof5.png"></img><br>
+<span style="cursor:pointer;" onclick="">Impact</span><br>
+<img src="/GamePictures/0outof5.png"></img><br>
+<span style="cursor:pointer;" onclick="">Value</span><br>
+<img src="/GamePictures/4outof5.png"></img><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Dollars</span><br>
 &emsp;&emsp;<img src="/GamePictures/4outof5.png"></img><br>
-&emsp;&emsp;Time<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Time</span><br>
 &emsp;&emsp;<img src="/GamePictures/4outof5.png"></img><br>
-&emsp;&emsp;Brainfood<br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="">Brainfood</span><br>
 &emsp;&emsp;<img src="/GamePictures/4outof5.png"></img><br>
 </nav>
 <div id="tempDiv">
@@ -213,8 +213,9 @@ I hope step games takes these concepts and uses them to make step games more int
 </p>
 <p>
 Value<br>
+4/5<br>
 &emsp;Dollars<br>
-&emsp;4/5: 5 bucks. If you want to play a step game and you havea  computer this is a slam dunk.<br>
+&emsp;4/5: 5 bucks. If you want to play a step game and you have a computer this is a slam dunk.<br>
 &emsp;Time<br>
 &emsp;4/5: Got like 12 hours of gameplay out of it. Still another difficulty to play. For the price this is great.<br>
 &emsp;Brainfood<br>
