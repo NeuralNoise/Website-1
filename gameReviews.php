@@ -80,39 +80,67 @@ Write Review</li>
 <br><br>
 <nav>
 Difficulty<br>
+<img src="/GamePictures/4outof5.png"></img><br>
 Graphics<br>
+<img src="/GamePictures/3outof5.png"></img><br>
 Atmosphere<br>
+<img src="/GamePictures/2outof5.png"></img><br>
 &emsp;&emsp;Style<br>
+&emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
 &emsp;&emsp;Setting<br>
+&emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
 &emsp;&emsp;Sound<br>
+&emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
 <br>
 Story<br>
+<img src="/GamePictures/2outof5.png"></img><br>
 &emsp;&emsp;Pacing<br>
+&emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
 &emsp;&emsp;Narrative<br>
+&emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
 &emsp;&emsp;Consistency<br>
+&emsp;&emsp;<img src="/GamePictures/0outof5.png"></img><br>
 &emsp;&emsp;Literary merit<br>
+&emsp;&emsp;<img src="/GamePictures/1outof5.png"></img><br>
 &emsp;&emsp;Characters<br>
+&emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
 <br>
 Engine<br>
+<img src="/GamePictures/3outof5.png"></img><br>
 &emsp;&emsp;Physics<br>
+&emsp;&emsp;<img src="/GamePictures/0outof5.png"></img><br>
 &emsp;&emsp;Latency<br>
+&emsp;&emsp;<img src="/GamePictures/0outof5.png"></img><br>
 <br>
 Systems<br>
+<img src="/GamePictures/0outof5.png"></img><br>
 &emsp;&emsp;UI<br>
+&emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
 &emsp;&emsp;Progress<br>
+&emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
 <br>
 Gameplay<br>
+<img src="/GamePictures/4outof5.png"></img><br>
 &emsp;&emsp;AI<br>
+&emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
 <br>
 Originality<br>
+<img src="/GamePictures/4outof5.png"></img><br>
 As Promised<br>
+<img src="/GamePictures/0outof5.png"></img><br>
 Impact<br>
+<img src="/GamePictures/0outof5.png"></img><br>
 Value<br>
+<img src="/GamePictures/4outof5.png"></img><br>
 &emsp;&emsp;Dollars<br>
+&emsp;&emsp;<img src="/GamePictures/4outof5.png"></img><br>
 &emsp;&emsp;Time<br>
+&emsp;&emsp;<img src="/GamePictures/4outof5.png"></img><br>
 &emsp;&emsp;Brainfood<br>
+&emsp;&emsp;<img src="/GamePictures/4outof5.png"></img><br>
 </nav>
 <div id="tempDiv">
+<h3 style="text-align: center;">Sequence Review</h3>
 <img src="/GamePictures/header.jpg"></img>
 <p>
 Difficulty<br>
@@ -140,21 +168,26 @@ Story<br>
 &emsp;Narrative<br>
 &emsp;2/5: Chat boxes.<br>
 &emsp;Consistency (with the series)<br>
+&emsp;<i>N/A</i><br>
 &emsp;Literary merit<br>
 &emsp;1/5: Not much. Touches on love and stuff but not significantly.<br>
+&emsp;Characters<br>
+&emsp;2/5: Annoying in my opinion.<br>
 </p>
 <p>
-Characters<br>
-	2/5: Annoying in my opinion.<br>
+
 </p>
 <p>
 Engine<br>
 3/5: The game worked.<br>
 &emsp;Physics<br>
+&emsp;<i>N/A</i><br>
 &emsp;Latency<br>
+&emsp;<i>N/A</i><br>
 </p>
 <p>
 Systems<br>
+<i>N/A</i><br>
 &emsp;UI<br>
 &emsp;3/5: Was ok. Battles were clean and made sense. Inventory stuff was kind of ugh.<br>
 &emsp;Progress<br>
@@ -169,7 +202,12 @@ Gameplay<br>
 <p>
 Originality<br>
 4/5: Added not only the triple pane concept but also the rpg battle concept to step games, making the game both harder and now interactive. This advances the step game genre above strictly memorization and makes improvisation and analysis a skill in the genre. This should be in more games.<br>
+</p>
+<p>
 As Promised<br>
+<i>N/A</i><br>
+</p>
+<p>
 (Historical) Impact<br>
 I hope step games takes these concepts and uses them to make step games more interesting.<br>
 </p>
