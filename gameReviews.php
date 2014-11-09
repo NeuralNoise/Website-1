@@ -129,7 +129,7 @@ function createRetrieveReviews(id) {
 function populateReview(id,metric) {
 	var nodePara = document.createElement("p");
 	nodePara.id=id;
-	text = document.createTextNode(eval(metric + "[0]"));
+	var text = document.createTextNode(eval(metric + "[0]"));
 	nodePara.appendChild(text);
 	nodePara.appendChild(document.createElement("br"));nodePara.appendChild(document.createElement("br"));
 	text = document.createTextNode(eval(metric + "[1]"));
@@ -139,6 +139,100 @@ function populateReview(id,metric) {
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodePara,replaced);
 	
+}
+function createWriteReview(id) {
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodeForm;
+	var nodeInput;
+	var text;
+	
+	nodeForm = document.createElement("form");
+	text = document.createTextNode("Enter game title: ");
+	nodeForm.appendChild(text);
+	nodeInput = document.createElement("input");
+	nodeInput.type= "text";
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
+	text = document.createTextNode("Select metrics to review:");
+	nodeDiv.appendChild(text);
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodeForm = document.createElement("form");
+	createWriteReviewMetricCheckbox(nodeForm,"Difficulty");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Graphics");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Atmosphere");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Atmosphere: Style");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Atmosphere: Setting");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Atmosphere: Sound");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Pacing");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Narrative");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Consistency");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Literary Merit");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Characters");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Engine");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Engine: Physics");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Engine: Latency");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Systems");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Systems: UI");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Systems: Progress");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Gameplay");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Gameplay: AI");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Originality");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"As Promised");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Impact");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Value");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Value: Dollars");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Value: Time");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Value: Brainfood");nodeForm.appendChild(document.createElement("br"));
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeForm = document.createElement("form");
+	nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Submit";
+	nodeInput.onclick = "storeLink(urlInput.value)";
+	nodeInput.setAttribute("onclick","storeLink(urlInput.value)");
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+
+	var replaced = document.getElementById(id);
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
+}
+function createWriteReviewMetricCheckbox(nodeForm,metricName) {
+	var nodeInput;
+	var text;
+	nodeInput = document.createElement("input");
+	nodeInput.type = "checkbox";
+	nodeInput.name = "metric";
+	nodeInput.value = metricName;
+	nodeForm.appendChild(nodeInput);
+	text = document.createTextNode(metricName);
+	nodeForm.appendChild(text);
+}
+
+function createWriteReviewDifficulty(id) {
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodeTextarea = document.createElement("textarea");
+	nodeTextarea.rows = 20;
+	nodeTextarea.cols = 50;
+	
+	nodeDiv.appendChild(nodeTextarea);
+
+	var replaced = document.getElementById(id);
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
 </script>
 <body>
