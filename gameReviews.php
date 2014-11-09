@@ -90,7 +90,7 @@ function createRetrieveReviews(id) {
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
-/*function createMainReview(id) {
+function createMainReview(id) {
 	var nodeDiv = document.createElement("div");
 	nodeDiv.id = "tempDiv";
 	
@@ -108,11 +108,7 @@ function createRetrieveReviews(id) {
 	nodeDiv.appendChild(nodeImage);
 	
 	var nodePara = document.createElement("p");
-	text = document.createTextNode("Difficulty");
-	nodePara.appendChild(text);
-	nodePara.appendChild(document.createElement("br"));
-	text = document.createTextNode(difficultyReview);
-	nodePara.appendChild(text);
+	nodePara.id = "reviewSection";
 	
 	nodeDiv.appendChild(nodePara);
 	
@@ -125,7 +121,7 @@ function createRetrieveReviews(id) {
 	
 	//<h3 style="text-align: center;">Sequence Review</h3>
 	//<img src="/GamePictures/header.jpg"></img>
-}*/
+}
 function populateReview(id,metric) {
 	var nodePara = document.createElement("p");
 	nodePara.id=id;
@@ -156,7 +152,18 @@ function createWriteReview(id) {
 	nodeForm.appendChild(nodeInput);
 	
 	nodeDiv.appendChild(nodeForm);
-	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodeForm = document.createElement("form");
+	var text = document.createTextNode("Enter the URL of the game image: ");
+	nodeForm.appendChild(text);
+	var nodeInput = document.createElement("input");
+	nodeInput.type = "text";
+	nodeInput.id = "gameImageUrlInput";
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
 	
 	text = document.createTextNode("Select metrics to review:");
 	nodeDiv.appendChild(text);
@@ -242,7 +249,7 @@ function createWriteReviewDifficulty(id) {
 Game Reviews</h2>
 <div class="nav">
 <ul id="menuBar">
-<li class="menuButton" onclick="tempcreateMainReview(&quot;tempDiv&quot;)">
+<li class="menuButton" onclick="createMainReview(&quot;tempDiv&quot;)">
 Main</li>
 <li class="menuButton" onclick="createRetrieveReviews(&quot;tempDiv&quot;)">
 Search Reviews</li>

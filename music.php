@@ -68,7 +68,7 @@ function createSaveAlbums(id) {
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
 	nodeInput.value = "Save";
-	nodeInput.setAttribute("onclick","storeAlbum(albumUrlInput.value)")
+	nodeInput.setAttribute("onclick","storeAlbum(albumUrlInput.value)");
 	nodeForm.appendChild(nodeInput);
 	
 	nodeDiv.appendChild(nodeForm);
