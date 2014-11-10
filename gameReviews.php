@@ -170,6 +170,18 @@ function createWriteReview(id) {
 	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
 	
 	var nodeForm = document.createElement("form");
+	var nodeInput;
+	var text;
+	nodeInput = document.createElement("input");
+	nodeInput.type = "checkbox";
+	nodeInput.name = "metric";
+	nodeInput.value = "All";
+	nodeInput.setAttribute("onclick","checkAll(this)");
+	nodeForm.appendChild(nodeInput);
+	text = document.createTextNode("All");
+	nodeForm.appendChild(text);
+	nodeForm.appendChild(document.createElement("br"));
+	nodeForm.appendChild(document.createElement("br"));
 	createWriteReviewMetricCheckbox(nodeForm,"Difficulty");nodeForm.appendChild(document.createElement("br"));
 	createWriteReviewMetricCheckbox(nodeForm,"Graphics");nodeForm.appendChild(document.createElement("br"));
 	createWriteReviewMetricCheckbox(nodeForm,"Atmosphere");nodeForm.appendChild(document.createElement("br"));
@@ -240,6 +252,13 @@ function createWriteReviewDifficulty(id) {
 
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
+}
+
+function checkAll(source) {
+	checkboxes = document.getElementsByName("metric");
+	for(var i=0, n=checkboxes.length;i < n; i++) {
+		checkboxes[i].checked = source.checked;
+	}
 }
 </script>
 <body>
