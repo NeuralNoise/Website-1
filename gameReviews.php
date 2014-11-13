@@ -33,6 +33,7 @@ var valueDollarsReview=["Value: Dollars","4/5: 5 bucks. If you want to play a st
 var valueTimeReview=["Value: Time","4/5: Got like 12 hours of gameplay out of it. Still another difficulty to play. For the price this is great."];
 var valueBrainfoodReview=["Value: Brainfood","4/5: Shows a great idea of how step games can evolve. A pioneer that deserves more attention."];
 
+var metrics;
 
 function retrieveReviews(str) {
 	if (window.XMLHttpRequest) {
@@ -174,7 +175,7 @@ function createWriteReview(id) {
 	var text;
 	nodeInput = document.createElement("input");
 	nodeInput.type = "checkbox";
-	nodeInput.name = "metric";
+	//nodeInput.name = "metric";
 	nodeInput.value = "All";
 	nodeInput.setAttribute("onclick","checkAll(this)");
 	nodeForm.appendChild(nodeInput);
@@ -217,8 +218,8 @@ function createWriteReview(id) {
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
 	nodeInput.value = "Submit";
-	nodeInput.onclick = "storeLink(urlInput.value)";
-	nodeInput.setAttribute("onclick","storeLink(urlInput.value)");
+	nodeInput.onclick = 'createFillinMetrics("tempDiv")';
+	nodeInput.setAttribute("onclick",'createFillinMetrics("tempDiv")');
 	nodeForm.appendChild(nodeInput);
 	
 	nodeDiv.appendChild(nodeForm);
@@ -239,8 +240,7 @@ function createWriteReviewMetricCheckbox(nodeForm,metricName) {
 	text = document.createTextNode(metricName);
 	nodeForm.appendChild(text);
 }
-
-function createWriteReviewDifficulty(id) {
+/*function createWriteReviewDifficulty(id) {
 	var nodeDiv = document.createElement("div");
 	nodeDiv.id = "tempDiv";
 	
@@ -252,10 +252,121 @@ function createWriteReviewDifficulty(id) {
 
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
+}*/
+function createFillinMetrics(id) {
+	var checkboxes = document.getElementsByName("metric");
+	metrics = new Array();
+	var metric;
+	for(var i=0, n=checkboxes.length;i < n; i++) {
+		if(checkboxes[i].checked) {
+			metricI = new Object();
+			metricI.value = checkboxes[i].value;
+			metricI.stars = 0;
+			metrics.push(metricI);
+		}
+	}
+	
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodeTextarea;
+	var nodePara;
+	var nodeForm;
+	var nodeInput;
+	var text;
+	
+	nodeForm = document.createElement("form");
+	nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Submit";
+	nodeInput.onclick = 'saveReview()';
+	nodeInput.setAttribute("onclick",'saveReview()');
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodePara = document.createElement("p");
+	nodePara.id = "outputTest";
+	
+	nodeDiv.appendChild(nodePara);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	for(var i=0, n=metrics.length;i < n; i++) {
+		nodePara = document.createElement("p");
+		text = document.createTextNode(metrics[i].value);
+		nodePara.appendChild(text);
+		
+		nodeDiv.appendChild(nodePara);
+		
+		nodeForm = document.createElement("form");
+		//nodeForm.id = metrics[i].value;
+		//nodeForm.setAttribute("data-stars",0);
+		for(var j=1; j<6; j++) {
+			nodeInput = document.createElement("input");
+			nodeInput.type = "button";
+			nodeInput.value = j;
+			nodeInput.setAttribute("data-metric",metrics[i].value);
+			nodeInput.setAttribute("onclick","changeStars(this.dataset.metric,this.value)");
+			nodeInput.id = "buttonStar"+metrics[i].value;
+			nodeForm.appendChild(nodeInput);
+		}
+		
+		nodeDiv.appendChild(nodeForm);
+		nodeDiv.appendChild(document.createElement("br"));
+		
+		nodeTextarea = document.createElement("textarea");
+		nodeTextarea.name = "metric";
+		nodeTextarea.id = metrics[i].value;
+		nodeTextarea.setAttribute("data-stars",0);
+		nodeTextarea.rows = 20;
+		nodeTextarea.cols = 50;
+		
+		nodeDiv.appendChild(nodeTextarea);
+	}
+	
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
+	
+	var replaced = document.getElementById(id);
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
-
+function saveReview(str) {
+	var submittString = "";
+	var textAreaS = document.getElementsByName("metric");
+	for(var i=0, n=textAreaS.length;i < n; i++) {
+		submittString = submittString + "/";
+		submittString = submittString + textAreaS[i].value;
+		submittString = submittString + "&" + textAreaS[i].dataset.stars;
+	}
+	
+	submittReview(submittString);
+}
+function submittReview(str) {
+	if (window.XMLHttpRequest) {
+	// code for IE7+, Firefox, Chrome, Opera, Safari
+	xmlhttp=new XMLHttpRequest();
+	} else { // code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+		  document.getElementById("outputTest").innerHTML=xmlhttp.responseText;
+		}
+	}
+	if(str !== "") {
+		xmlhttp.open("POST","submittReview.php",true);
+		xmlhttp.send(str);
+		//createWebsitePreview("tempDiv",str);
+	}
+}
+function changeStars(metric,rating) {
+	//Stars data is stored on the form (the form which contains the "set star" buttons)
+	var nodeFormS = document.getElementById(metric);
+	nodeFormS.dataset.stars = rating;
+}
 function checkAll(source) {
-	checkboxes = document.getElementsByName("metric");
+	var checkboxes = document.getElementsByName("metric");
 	for(var i=0, n=checkboxes.length;i < n; i++) {
 		checkboxes[i].checked = source.checked;
 	}
