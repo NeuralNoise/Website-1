@@ -145,27 +145,6 @@ function createWriteReview(id) {
 	var nodeInput;
 	var text;
 	
-	nodeForm = document.createElement("form");
-	text = document.createTextNode("Enter game title: ");
-	nodeForm.appendChild(text);
-	nodeInput = document.createElement("input");
-	nodeInput.type= "text";
-	nodeForm.appendChild(nodeInput);
-	
-	nodeDiv.appendChild(nodeForm);
-	nodeDiv.appendChild(document.createElement("br"));
-	
-	var nodeForm = document.createElement("form");
-	var text = document.createTextNode("Enter the URL of the game image: ");
-	nodeForm.appendChild(text);
-	var nodeInput = document.createElement("input");
-	nodeInput.type = "text";
-	nodeInput.id = "gameImageUrlInput";
-	nodeForm.appendChild(nodeInput);
-	
-	nodeDiv.appendChild(nodeForm);
-	nodeDiv.appendChild(document.createElement("br"));
-	
 	text = document.createTextNode("Select metrics to review:");
 	nodeDiv.appendChild(text);
 	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
@@ -280,7 +259,6 @@ function createFillinMetrics(id) {
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
 	nodeInput.value = "Submit";
-	nodeInput.onclick = 'saveReview()';
 	nodeInput.setAttribute("onclick",'saveReview()');
 	nodeForm.appendChild(nodeInput);
 	
@@ -291,6 +269,28 @@ function createFillinMetrics(id) {
 	nodePara.id = "outputTest";
 	
 	nodeDiv.appendChild(nodePara);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeForm = document.createElement("form");
+	text = document.createTextNode("Enter game title: ");
+	nodeForm.appendChild(text);
+	nodeInput = document.createElement("input");
+	nodeInput.type = "text";
+	nodeInput.id = "gameTitleInput";
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodeForm = document.createElement("form");
+	var text = document.createTextNode("Enter the URL of the game image: ");
+	nodeForm.appendChild(text);
+	var nodeInput = document.createElement("input");
+	nodeInput.type = "text";
+	nodeInput.id = "gameImageUrlInput";
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
 	nodeDiv.appendChild(document.createElement("br"));
 	
 	for(var iEveryMetric=0, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
@@ -338,8 +338,13 @@ function createFillinMetrics(id) {
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
-function saveReview(str) {
+function saveReview() {
 	var submittString = "";
+	var gameTitle = document.getElementById("gameTitleInput");
+	submittString = gameTitle.value;
+	var gameImage = document.getElementById("gameImageUrlInput");
+	submittString = submittString + "/" + gameImage.value;
+	
 	var textAreaS = document.getElementsByName("metric");
 	for(var i=0, n=textAreaS.length;i < n; i++) {
 		submittString = submittString + "/";
