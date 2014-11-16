@@ -1,18 +1,23 @@
 <?php
+//does not write newlines to text file
 
 $request_body = file_get_contents('php://input');
 //echo "<p>" . $request_body . "</p>";
 
 //return;
-
 $metrics = explode('/',$request_body);
-echo getcwd();
+echo $request_body;
+//echo getcwd();
+unlink(".\\GameReviews\\review1.txt");
 $handle = fopen(".\\GameReviews\\review1.txt","w");
 $length = count($metrics);
 for($i=0; $i<$length; $i++) {
 	fwrite($handle,$metrics[$i] . "\r\n");
 }
 fclose($handle);
+
+//Mark review in database
+
 return;
 
 
@@ -22,7 +27,7 @@ return;
 
 
 
-$q=$_REQUEST["q"];
+/*$q=$_REQUEST["q"];
 $q = (string)$q;
 if (substr($q,0,4) !== "http") {
 	echo "Not a web";
@@ -58,5 +63,5 @@ else {
 }
 
 $con->close();
-
+*/
 ?>

@@ -273,6 +273,7 @@ function createFillinMetrics(id) {
 	var nodePara;
 	var nodeForm;
 	var nodeInput;
+	var nodeImage;
 	var text;
 	
 	nodeForm = document.createElement("form");
@@ -292,23 +293,29 @@ function createFillinMetrics(id) {
 	nodeDiv.appendChild(nodePara);
 	nodeDiv.appendChild(document.createElement("br"));
 	
-	for(var i=0, n=metrics.length;i < n; i++) {
+	for(var iEveryMetric=0, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
 		nodePara = document.createElement("p");
-		text = document.createTextNode(metrics[i].value);
+		text = document.createTextNode(metrics[iEveryMetric].value);
 		nodePara.appendChild(text);
 		
 		nodeDiv.appendChild(nodePara);
 		
+		nodeImage = document.createElement("img");
+		nodeImage.id = "imageStar"+metrics[iEveryMetric].value;
+		nodeImage.src = "";
+		
+		nodeDiv.appendChild(nodeImage);
+		
 		nodeForm = document.createElement("form");
-		//nodeForm.id = metrics[i].value;
+		//nodeForm.id = metrics[iEveryMetric].value;
 		//nodeForm.setAttribute("data-stars",0);
-		for(var j=1; j<6; j++) {
+		for(var iEveryButton=0; iEveryButton<6; iEveryButton++) {
 			nodeInput = document.createElement("input");
 			nodeInput.type = "button";
-			nodeInput.value = j;
-			nodeInput.setAttribute("data-metric",metrics[i].value);
+			nodeInput.value = iEveryButton;
+			nodeInput.setAttribute("data-metric",metrics[iEveryMetric].value);
 			nodeInput.setAttribute("onclick","changeStars(this.dataset.metric,this.value)");
-			nodeInput.id = "buttonStar"+metrics[i].value;
+			nodeInput.id = "buttonStar"+metrics[iEveryMetric].value;
 			nodeForm.appendChild(nodeInput);
 		}
 		
@@ -317,7 +324,7 @@ function createFillinMetrics(id) {
 		
 		nodeTextarea = document.createElement("textarea");
 		nodeTextarea.name = "metric";
-		nodeTextarea.id = metrics[i].value;
+		nodeTextarea.id = metrics[iEveryMetric].value;
 		nodeTextarea.setAttribute("data-stars",0);
 		nodeTextarea.rows = 20;
 		nodeTextarea.cols = 50;
@@ -364,12 +371,47 @@ function changeStars(metric,rating) {
 	//Stars data is stored on the form (the form which contains the "set star" buttons)
 	var nodeFormS = document.getElementById(metric);
 	nodeFormS.dataset.stars = rating;
+	
+	var nodeImage = document.getElementById("imageStar"+metric);
+	if(rating==0)
+		nodeImage.src = "";//"/GamePictures/0outof5.png"
+	if(rating==1)
+		nodeImage.src = "/GamePictures/1outof5.png";
+	if(rating==2)
+		nodeImage.src = "/GamePictures/2outof5.png";
+	if(rating==3)
+		nodeImage.src = "/GamePictures/3outof5.png";
+	if(rating==4)
+		nodeImage.src = "/GamePictures/4outof5.png";
+	if(rating==5)
+		nodeImage.src = "/GamePictures/5outof5.png";
+}
+function printFiveStars(parento,stars) {
+	var nodeImage = document.createElement("img");
+	if(stars==0)
+		nodeImage.src = "/GamePictures/0outof5.png";
+	if(stars==1)
+		nodeImage.src = "/GamePictures/1outof5.png";
+	if(stars==2)
+		nodeImage.src = "/GamePictures/2outof5.png";
+	if(stars==3)
+		nodeImage.src = "/GamePictures/3outof5.png";
+	if(stars==4)
+		nodeImage.src = "/GamePictures/4outof5.png";
+	if(stars==5)
+		nodeImage.src = "/GamePictures/5outof5.png";
+	
+	var replaced = document.getElementById(id);
+	replaced.parentNode.replaceChild(parento,replaced);
 }
 function checkAll(source) {
 	var checkboxes = document.getElementsByName("metric");
 	for(var i=0, n=checkboxes.length;i < n; i++) {
 		checkboxes[i].checked = source.checked;
 	}
+}
+function scrollToTop() {
+	window.scrollTo(0,0);
 }
 </script>
 <body>
@@ -389,64 +431,64 @@ Write Review</li>
 </div>
 <br><br>
 <nav>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;difficultyReview&quot;)">Difficulty</span><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;difficultyReview&quot;)">Difficulty</span><br>
 <img src="/GamePictures/4outof5.png"></img><br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;graphicsReview&quot;)">Graphics</span><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;graphicsReview&quot;)">Graphics</span><br>
 <img src="/GamePictures/3outof5.png"></img><br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;atmosphereReview&quot;)">Atmosphere</span><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;atmosphereReview&quot;)">Atmosphere</span><br>
 <img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;atmosphereStyleReview&quot;)">Style</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;atmosphereStyleReview&quot;)">Style</span><br>
 &emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;atmosphereSettingReview&quot;)">Setting</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;atmosphereSettingReview&quot;)">Setting</span><br>
 &emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;atmosphereSoundReview&quot;)">Sound</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;atmosphereSoundReview&quot;)">Sound</span><br>
 &emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
 <br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;storyReview&quot;)">Story</span><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;storyReview&quot;)">Story</span><br>
 <img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;storyPacingReview&quot;)">Pacing</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;storyPacingReview&quot;)">Pacing</span><br>
 &emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;storyNarrativeReview&quot;)">Narrative</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;storyNarrativeReview&quot;)">Narrative</span><br>
 &emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;storyConsistencyReview&quot;)">Consistency</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;storyConsistencyReview&quot;)">Consistency</span><br>
 &emsp;&emsp;<img src="/GamePictures/0outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;storyLiterarymeritReview&quot;)">Literary merit</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;storyLiterarymeritReview&quot;)">Literary merit</span><br>
 &emsp;&emsp;<img src="/GamePictures/1outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;storyCharactersReview&quot;)">Characters</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;storyCharactersReview&quot;)">Characters</span><br>
 &emsp;&emsp;<img src="/GamePictures/2outof5.png"></img><br>
 <br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;engineReview&quot;)">Engine</span><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;engineReview&quot;)">Engine</span><br>
 <img src="/GamePictures/3outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;enginePhysicsReview&quot;)">Physics</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;enginePhysicsReview&quot;)">Physics</span><br>
 &emsp;&emsp;<img src="/GamePictures/0outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;engineLatencyReview&quot;)">Latency</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;engineLatencyReview&quot;)">Latency</span><br>
 &emsp;&emsp;<img src="/GamePictures/0outof5.png"></img><br>
 <br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;systemsReview&quot;)">Systems</span><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;systemsReview&quot;)">Systems</span><br>
 <img src="/GamePictures/0outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;systemsUiReview&quot;)">UI</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;systemsUiReview&quot;)">UI</span><br>
 &emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;systemsProgressReview&quot;)">Progress</span><br>
-&emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
-<br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;gameplayReview&quot;)">Gameplay</span><br>
-<img src="/GamePictures/4outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;gameplayAiReview&quot;)">AI</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;systemsProgressReview&quot;)">Progress</span><br>
 &emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
 <br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;originalityReview&quot;)">Originality</span><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;gameplayReview&quot;)">Gameplay</span><br>
 <img src="/GamePictures/4outof5.png"></img><br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;aspromisedReview&quot;)">As Promised</span><br>
-<img src="/GamePictures/0outof5.png"></img><br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;historicalImpact&quot;)">Impact</span><br>
-<img src="/GamePictures/0outof5.png"></img><br>
-<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;valueReview&quot;)">Value</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;gameplayAiReview&quot;)">AI</span><br>
+&emsp;&emsp;<img src="/GamePictures/3outof5.png"></img><br>
+<br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;originalityReview&quot;)">Originality</span><br>
 <img src="/GamePictures/4outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;valueDollarsReview&quot;)">Dollars</span><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;aspromisedReview&quot;)">As Promised</span><br>
+<img src="/GamePictures/0outof5.png"></img><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;historicalImpact&quot;)">Impact</span><br>
+<img src="/GamePictures/0outof5.png"></img><br>
+<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;valueReview&quot;)">Value</span><br>
+<img src="/GamePictures/4outof5.png"></img><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;valueDollarsReview&quot;)">Dollars</span><br>
 &emsp;&emsp;<img src="/GamePictures/4outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;valueTimeReview&quot;)">Time</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;valueTimeReview&quot;)">Time</span><br>
 &emsp;&emsp;<img src="/GamePictures/4outof5.png"></img><br>
-&emsp;&emsp;<span style="cursor:pointer;" onclick="populateReview(&quot;reviewSection&quot;,&quot;valueBrainfoodReview&quot;)">Brainfood</span><br>
+&emsp;&emsp;<span style="cursor:pointer;" onclick="scrollToTop();populateReview(&quot;reviewSection&quot;,&quot;valueBrainfoodReview&quot;)">Brainfood</span><br>
 &emsp;&emsp;<img src="/GamePictures/4outof5.png"></img><br>
 </nav>
 <div id="tempDiv">
