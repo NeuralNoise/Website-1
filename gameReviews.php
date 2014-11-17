@@ -34,6 +34,7 @@ var valueTimeReview=["Value: Time","4/5: Got like 12 hours of gameplay out of it
 var valueBrainfoodReview=["Value: Brainfood","4/5: Shows a great idea of how step games can evolve. A pioneer that deserves more attention."];
 
 var metrics;
+var reviewData;
 
 function retrieveReviews(str) {
 	if (window.XMLHttpRequest) {
@@ -45,6 +46,8 @@ function retrieveReviews(str) {
 	xmlhttp.onreadystatechange=function() {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 		  document.getElementById("outputLinks").innerHTML=xmlhttp.responseText;
+		  processReviewData(xmlhttp.responseText);
+		  reviewData = new Array();
 		}
 	}
 	if(str !== "") {
@@ -421,6 +424,11 @@ function printFiveStars(parento,stars) {
 	
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(parento,replaced);
+}
+function processReviewData(reviewData) {
+	var pos = reviewData.indexOf("][");
+	reviewData = reviewData.slice(pos+2);
+	var test;
 }
 function checkAll(source) {
 	var checkboxes = document.getElementsByName("metric");

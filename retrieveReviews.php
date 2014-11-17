@@ -2,7 +2,7 @@
 $searchTerm=$_REQUEST["q"];
 $searchTerm = (string)$searchTerm;
 
-if (empty($q)) {
+if (empty($searchTerm)) {
 /*	
 	echo "<ul>";
 	foreach($a as $lnk) {
@@ -13,15 +13,19 @@ if (empty($q)) {
 	echo "</ul>";
 */
 }
-$fileLocation = ".\\GameReviews\\review" . $q . ".txt";
+$fileLocation = ".\\GameReviews\\review" . $searchTerm . ".txt";
 
 if (file_exists($fileLocation)) {
 	$handle = fopen($fileLocation,"r");
-	
-	
-	fclose($fileLocation);
+	$data = fread($handle,filesize($fileLocation));
+	echo "<a href=\"" . "gameReviews.php" . "\" target= \"_blank\">" . $searchTerm . "</a>";
+	echo "<br>";
+	echo "][";
+	echo $data;
+	fclose($handle);
 }
 
+return;
 
 // lookup all hints from array if $q is different from "" 
 /*if ($q !== "") {

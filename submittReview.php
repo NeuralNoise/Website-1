@@ -12,7 +12,7 @@ unlink(".\\GameReviews\\review" . $metrics[0] . ".txt");
 $handle = fopen(".\\GameReviews\\review" . $metrics[0] . ".txt","w");
 $length = count($metrics);
 for($i=0; $i<$length; $i++) {	//First two lines of 'metrics' are game Title and game Image
-	fwrite($handle,$metrics[$i] . "\r\n");
+	fwrite($handle,$metrics[$i] . "/");
 }
 fclose($handle);
 
