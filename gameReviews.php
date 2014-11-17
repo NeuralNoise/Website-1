@@ -237,12 +237,14 @@ function createFillinMetrics(id) {
 	metrics = new Array();
 	var metric;
 	for(var i=0, n=checkboxes.length;i < n; i++) {
-		if(checkboxes[i].checked) {
-			metricI = new Object();
-			metricI.value = checkboxes[i].value;
-			metricI.stars = 0;
-			metrics.push(metricI);
-		}
+		metricI = new Object();
+		metricI.value = checkboxes[i].value;
+		if(checkboxes[i].checked)
+			metricI.check = true;
+		else
+			metricI.check = false;
+		metricI.stars = 0;
+		metrics.push(metricI);
 	}
 	
 	var nodeDiv = document.createElement("div");
@@ -294,6 +296,9 @@ function createFillinMetrics(id) {
 	nodeDiv.appendChild(document.createElement("br"));
 	
 	for(var iEveryMetric=0, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
+		if (metrics[iEveryMetric].check == false)
+			continue;
+			
 		nodePara = document.createElement("p");
 		text = document.createTextNode(metrics[iEveryMetric].value);
 		nodePara.appendChild(text);
@@ -346,10 +351,18 @@ function saveReview() {
 	submittString = submittString + "/" + gameImage.value;
 	
 	var textAreaS = document.getElementsByName("metric");
-	for(var i=0, n=textAreaS.length;i < n; i++) {
-		submittString = submittString + "/";
-		submittString = submittString + textAreaS[i].value;
-		submittString = submittString + "&" + textAreaS[i].dataset.stars;
+	for(var iEveryMetric=0, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
+		submittString = submittString + "/" + metrics[iEveryMetric].value;
+		if(metrics[iEveryMetric].check == true) {
+			for(var iEveryTextarea=0; iEveryTextarea<textAreaS.length; iEveryTextarea++) {
+				if(metrics[iEveryMetric].value == textAreaS[iEveryTextarea].id) {
+					submittString = submittString + "&" + textAreaS[iEveryTextarea].value;
+					submittString = submittString + "&" + textAreaS[iEveryTextarea].dataset.stars;
+				}
+			}
+		}
+		else
+			submittString = submittString + "&0";
 	}
 	
 	submittReview(submittString);

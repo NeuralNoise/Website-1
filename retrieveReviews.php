@@ -13,6 +13,15 @@ if (empty($q)) {
 	echo "</ul>";
 */
 }
+$fileLocation = ".\\GameReviews\\review" . $q . ".txt";
+
+if (file_exists($fileLocation)) {
+	$handle = fopen($fileLocation,"r");
+	
+	
+	fclose($fileLocation);
+}
+
 
 // lookup all hints from array if $q is different from "" 
 /*if ($q !== "") {

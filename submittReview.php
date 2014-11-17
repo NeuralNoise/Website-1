@@ -8,10 +8,10 @@ $request_body = file_get_contents('php://input');
 $metrics = explode('/',$request_body);
 echo $request_body;
 //echo getcwd();
-unlink(".\\GameReviews\\review1.txt");
-$handle = fopen(".\\GameReviews\\review1.txt","w");
+unlink(".\\GameReviews\\review" . $metrics[0] . ".txt");
+$handle = fopen(".\\GameReviews\\review" . $metrics[0] . ".txt","w");
 $length = count($metrics);
-for($i=0; $i<$length; $i++) {
+for($i=0; $i<$length; $i++) {	//First two lines of 'metrics' are game Title and game Image
 	fwrite($handle,$metrics[$i] . "\r\n");
 }
 fclose($handle);
