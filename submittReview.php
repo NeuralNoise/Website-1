@@ -1,5 +1,6 @@
 <?php
-//does not write newlines to text file
+//does not write newlines to text file *shouldn't matter*
+//needs to also store the author
 
 $request_body = file_get_contents('php://input');
 //echo "<p>" . $request_body . "</p>";

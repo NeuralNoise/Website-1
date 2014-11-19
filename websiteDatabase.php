@@ -5,7 +5,6 @@
   <link rel="stylesheet" href="main.css">
 </head>
 <script>
-
 function retrieveLinks(str) {
 	if (window.XMLHttpRequest) {
 	// code for IE7+, Firefox, Chrome, Opera, Safari
