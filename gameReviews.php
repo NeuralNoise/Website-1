@@ -349,25 +349,27 @@ function createFillinMetrics(id) {
 }
 function saveReview() {
 //Need new delimiters
+	var ch29 = String.fromCharCode(29);
+	var ch30 = String.fromCharCode(30);
 	var submittString = "";
 	var gameTitle = document.getElementById("gameTitleInput");
 	submittString = gameTitle.value;
 	var gameImage = document.getElementById("gameImageUrlInput");
-	submittString = submittString + "/" + gameImage.value;
+	submittString = submittString + ch29 + gameImage.value;
 	
 	var textAreaS = document.getElementsByName("metric");
 	for(var iEveryMetric=0, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
-		submittString = submittString + "/" + metrics[iEveryMetric].value;
+		submittString = submittString + ch29 + metrics[iEveryMetric].value;
 		if(metrics[iEveryMetric].check == true) {
 			for(var iEveryTextarea=0; iEveryTextarea<textAreaS.length; iEveryTextarea++) {
 				if(metrics[iEveryMetric].value == textAreaS[iEveryTextarea].id) {
-					submittString = submittString + "&" + textAreaS[iEveryTextarea].value;
-					submittString = submittString + "&" + textAreaS[iEveryTextarea].dataset.stars;
+					submittString = submittString + ch30 + textAreaS[iEveryTextarea].value;
+					submittString = submittString + ch30 + textAreaS[iEveryTextarea].dataset.stars;
 				}
 			}
 		}
 		else
-			submittString = submittString + "&&0";
+			submittString = submittString + ch30 + ch30 + "0";
 	}
 	
 	submittReview(submittString);
@@ -428,15 +430,18 @@ function printFiveStars(parento,stars) {
 	replaced.parentNode.replaceChild(parento,replaced);
 }
 function processReviewData(processData) {
+	var ch29 = String.fromCharCode(29);
+	var ch30 = String.fromCharCode(30);
+	
 	var pos = processData.indexOf("][");
 	processData = processData.slice(pos+2);
-	processData = processData.split("/");
+	processData = processData.split(ch29);
 	var tempArray = new Array();
 	var tempData;
 	var metricData;
 	for(var iEveryMetric=0, n=processData.length-1;iEveryMetric<n;iEveryMetric++) {	//the -1 in length skips the last element which is a waste element
 		metricData = new Object();
-		tempData = processData[iEveryMetric].split("&");
+		tempData = processData[iEveryMetric].split(ch30);
 		metricData.metric = tempData[0];
 		metricData.text = tempData[1];
 		metricData.stars = tempData[2];
