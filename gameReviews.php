@@ -5,36 +5,9 @@
   <link rel="stylesheet" href="main.css">
 </head>
 <script>
-var difficultyReview=["Difficulty","4/5: Played on hard. Played way too much Guitar Hero and this was still substantially difficult for me. Pacing of the difficulty was eerily good. Made me feel satisfied to beat the game."];
-var graphicsReview=["Graphics","3/5: They are fine for the price point and the genre."];
-var atmosphereReview=["Atmosphere","2/5: Was ok. Kind of annoying."];
-var atmosphereStyleReview=["Atmosphere: Style","2/5: Was ok, kind of annoying."];
-var atmosphereSettingReview=["Atmosphere: Setting","2/5: Simple, pretty repetitive."];
-var atmosphereSoundReview=["Atmosphere: Sound","3/5: Songs were pretty cool."];
-var storyReview=["Story","2/5: Not much to see here. Was acceptible."];
-var storyPacingReview=["Story: Pacing","3/5: Was fine."];
-var storyNarrativeReview=["Story: Narrative","2/5: Chat boxes."];
-var storyConsistencyReview=["Story: Consistency","N/A"];
-var storyLiterarymeritReview=["Story: Literary Merit","1/5: Not much. Touches on love and stuff but not significantly."];
-var storyCharactersReview=["Story: Characters","2/5: Annoying in my opinion."];
-var engineReview=["Engine","3/5: The game worked."];
-var enginePhysicsReview=["Engine: Physics","N/A"];
-var engineLatencyReview=["Engine: Latency","N/A"];
-var systemsReview=["Systems","N/A"];
-var systemsUiReview=["Systems: UI","3/5: Was ok. Battles were clean and made sense. Inventory stuff was kind of ugh."];
-var systemsProgressReview=["Systems: Progress","3/5: Got new attacks over time that did different stuff in battle, and required more complex inputs. Was pretty cool."];
-var gameplayReview=["Gameplay","4/5: This is what the game is really about. Having the three panels at once was very cool. Combining that concept with an rpg battle also made sense and was quite smart. Gives a twist to the step game formula that gives you something new to master. Battling against an enemy made the game more than just memorization: you have to react to an opponent, which adds another layer to the step game formula which would be great to see more of."];
-var gameplayAiReview=["Gameplay: AI","3/5: Worked. Made game a good difficulty. Not much variation at all."];
-var originalityReview=["Originality","4/5: Added not only the triple pane concept but also the rpg battle concept to step games, making the game both harder and now interactive. This advances the step game genre above strictly memorization and makes improvisation and analysis a skill in the genre. This should be in more games."];
-var aspromisedReview=["As Promised","N/A"];
-var historicalImpact=["Historical Impact","I hope step games takes these concepts and uses them to make step games more interesting."];
-var valueReview=["Value","4/5"];
-var valueDollarsReview=["Value: Dollars","4/5: 5 bucks. If you want to play a step game and you have a computer this is a slam dunk."];
-var valueTimeReview=["Value: Time","4/5: Got like 12 hours of gameplay out of it. Still another difficulty to play. For the price this is great."];
-var valueBrainfoodReview=["Value: Brainfood","4/5: Shows a great idea of how step games can evolve. A pioneer that deserves more attention."];
-
+//Globals
 var metrics;	
-var reviewData;	//Array. Holds game review data retrieved from file. First two elements are Game Title, Game Image. The rest are the metrics in descending order
+var reviewData = "unpopulated";	//Array. Holds game review data retrieved from file. First two elements are Game Title, Game Image. The rest are the metrics in descending order
 
 function retrieveReviews(str) {
 	if (window.XMLHttpRequest) {
@@ -45,9 +18,14 @@ function retrieveReviews(str) {
 	}
 	xmlhttp.onreadystatechange=function() {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-		  document.getElementById("outputLinks").innerHTML=xmlhttp.responseText;
-		  processReviewData(xmlhttp.responseText);
-		  createNav();
+			var pos = xmlhttp.responseText.indexOf("]["); document.getElementById("outputLinks").innerHTML=xmlhttp.responseText.slice(0,pos);
+			var processData;
+			processData = xmlhttp.responseText.slice(pos+2);
+			if(processData.slice(0,2) == "~~") {
+				var passString = processData.slice(2);
+				processReviewData(passString);
+				//createNav();
+			}
 		}
 	}
 	if(str !== "") {
@@ -65,6 +43,7 @@ function createRetrieveReviews(id) {
 	var nodeInput = document.createElement("input");
 	nodeInput.type = "text";
 	nodeInput.id = "searchInput";
+	nodeInput.setAttribute("onsubmit","retrieveReviews(searchInput.value)");
 	nodeForm.appendChild(nodeInput);
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
@@ -79,7 +58,7 @@ function createRetrieveReviews(id) {
 	
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
-	nodeInput.setAttribute("onclick","retrieveReviews()");
+	nodeInput.setAttribute("onclick","retrieveReviewsAll()");
 	nodeInput.value = "All";
 	
 	nodeDiv.appendChild(nodeInput);
@@ -94,20 +73,46 @@ function createRetrieveReviews(id) {
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
+function retrieveReviewsAll() {
+	var nodeSpan = document.createElement("span");
+	nodeSpan.appendChild(document.createElement("br"));
+	
+	var nodeForm = document.createElement("form");
+	
+	var nodeInput;
+	var alphabetString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	for(var i=0, l=alphabetString.length; i<l; i++) {
+		nodeInput = document.createElement("input");
+		nodeInput.type = "button";
+		nodeInput.value = alphabetString.charAt(i);
+		nodeForm.appendChild(nodeInput);
+	}
+	
+	nodeSpan.appendChild(nodeForm);
+	
+	var replaced = document.getElementById("outputLinks");
+	replaced.parentNode.replaceChild(nodeSpan,replaced);
+}
 function createMainReview(id) {
+//If no review loaded, the main page wont work because reviewData wont be loaded and will crash the function
+//FIXED
 	var nodeDiv = document.createElement("div");
 	nodeDiv.id = "tempDiv";
 	
 	var text;
 	var nodeHeader = document.createElement("h3");
-	text = document.createTextNode("Sequence Review");
-	nodeHeader.appendChild(text);
+	if(reviewData !== "unpopulated") {
+		text = document.createTextNode(reviewData[0].metric + " Review");
+		nodeHeader.appendChild(text);
+	}
 	nodeHeader.setAttribute("style","text-align: center;");
 	
 	nodeDiv.appendChild(nodeHeader);
 	
 	var nodeImage = document.createElement("img");
-	nodeImage.setAttribute("src","/GamePictures/header.jpg");
+	if(reviewData !== "unpopulated") {
+		nodeImage.setAttribute("src","/GamePictures/" + reviewData[1].metric + ".jpg");
+	}
 	
 	nodeDiv.appendChild(nodeImage);
 	
@@ -121,13 +126,15 @@ function createMainReview(id) {
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
 	
-	
-	
 	//<h3 style="text-align: center;">Sequence Review</h3>
 	//<img src="/GamePictures/header.jpg"></img>
 }
 function populateReview(id,metric) {
-	index = findIndexbyMetric(metric);
+	undoBorder();
+
+	createMainReview("tempDiv");
+
+	var index = findIndexbyMetric(metric);
 	
 	var nodePara = document.createElement("p");
 	nodePara.id=id;
@@ -136,11 +143,15 @@ function populateReview(id,metric) {
 	nodePara.appendChild(document.createElement("br"));nodePara.appendChild(document.createElement("br"));
 	text = document.createTextNode(eval("reviewData[" + index + "].text"));
 	nodePara.appendChild(text);
-	
+	nodePara.setAttribute("data-metric",metric);
 	
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodePara,replaced);
 	
+	
+	var nodeDiv = document.getElementById("div" + metric);
+	nodeDiv.setAttribute("style","border-style: groove;");
+	var test;
 }
 function createWriteReview(id) {
 	var nodeDiv = document.createElement("div");
@@ -241,6 +252,12 @@ function createFillinMetrics(id) {
 	var checkboxes = document.getElementsByName("metric");
 	metrics = new Array();
 	var metric;
+	
+	metricI = new Object();
+	metricI.value = "Overall";
+	metricI.check = true;
+	metricI.stars = 0;
+	metrics.push(metricI);
 	for(var i=0, n=checkboxes.length;i < n; i++) {
 		metricI = new Object();
 		metricI.value = checkboxes[i].value;
@@ -300,8 +317,48 @@ function createFillinMetrics(id) {
 	nodeDiv.appendChild(nodeForm);
 	nodeDiv.appendChild(document.createElement("br"));
 	
-	//Create the input for each metric
-	for(var iEveryMetric=0, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
+	//Input for overall score
+	nodePara = document.createElement("p");
+	text = document.createTextNode(metrics[0].value);
+	nodePara.appendChild(text);
+	
+	nodeDiv.appendChild(nodePara);
+	
+	nodeImage = document.createElement("img");
+	nodeImage.id = "imageStar"+metrics[0].value;
+	nodeImage.src = "/GamePictures/0outof10.png";
+	
+	nodeDiv.appendChild(nodeImage);
+	
+	nodeForm = document.createElement("form");
+	//nodeForm.id = metrics[0].value;
+	//nodeForm.setAttribute("data-stars",0);
+	for(var iEveryButton=0; iEveryButton<11; iEveryButton++) {
+		nodeInput = document.createElement("input");
+		nodeInput.type = "button";
+		nodeInput.value = iEveryButton;
+		nodeInput.setAttribute("data-metric",metrics[0].value);
+		nodeInput.setAttribute("onclick","changeStars(this.dataset.metric,this.value)");
+		nodeInput.id = "buttonStar"+metrics[0].value;
+		nodeForm.appendChild(nodeInput);
+	}
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeTextarea = document.createElement("textarea");
+	nodeTextarea.name = "metric";
+	nodeTextarea.id = metrics[0].value;
+	nodeTextarea.setAttribute("data-stars",0);
+	nodeTextarea.rows = 20;
+	nodeTextarea.cols = 50;
+	
+	nodeDiv.appendChild(nodeTextarea);
+		
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
+	//Create the input for each metric (overall score has already been processed)
+	for(var iEveryMetric=1, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
 		if (metrics[iEveryMetric].check == false)
 			continue;
 			
@@ -313,7 +370,7 @@ function createFillinMetrics(id) {
 		
 		nodeImage = document.createElement("img");
 		nodeImage.id = "imageStar"+metrics[iEveryMetric].value;
-		nodeImage.src = "";
+		nodeImage.src = "/GamePictures/0outof5.png";
 		
 		nodeDiv.appendChild(nodeImage);
 		
@@ -350,7 +407,6 @@ function createFillinMetrics(id) {
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
 function saveReview() {
-//Need new delimiters
 	var ch29 = String.fromCharCode(29);
 	var ch30 = String.fromCharCode(30);
 	var submittString = "";
@@ -400,6 +456,11 @@ function changeStars(metric,rating) {
 	nodeFormS.dataset.stars = rating;
 	
 	var nodeImage = document.getElementById("imageStar"+metric);
+	if(metric == "Overall")
+		nodeImage.src = "/GamePictures/" + rating + "outof10.png";
+	else
+		nodeImage.src = "/GamePictures/" + rating + "outof5.png";
+	/*
 	if(rating==0)
 		nodeImage.src = "";//"/GamePictures/0outof5.png"
 	if(rating==1)
@@ -412,6 +473,7 @@ function changeStars(metric,rating) {
 		nodeImage.src = "/GamePictures/4outof5.png";
 	if(rating==5)
 		nodeImage.src = "/GamePictures/5outof5.png";
+	*/
 }
 function printFiveStars(parento,stars) {
 	var nodeImage = document.createElement("img");
@@ -435,13 +497,11 @@ function processReviewData(processData) {
 	var ch29 = String.fromCharCode(29);
 	var ch30 = String.fromCharCode(30);
 	
-	var pos = processData.indexOf("][");
-	processData = processData.slice(pos+2);
 	processData = processData.split(ch29);
 	var tempArray = new Array();
 	var tempData;
 	var metricData;
-	for(var iEveryMetric=0, n=processData.length-1;iEveryMetric<n;iEveryMetric++) {	//the -1 in length skips the last element which is a waste element
+	for(var iEveryMetric=0, n=processData.length-1;iEveryMetric<n;iEveryMetric++) {	//the -1 in length skips the last element, which is a waste element
 		metricData = new Object();
 		tempData = processData[iEveryMetric].split(ch30);
 		metricData.metric = tempData[0];
@@ -455,33 +515,124 @@ function createNav() {
 	var nodeNav = document.createElement("nav");
 	nodeNav.id = "sidebar";
 	
+	var nodeDiv;
 	var nodeSpan;
 	var nodeImage;
 	var text;
 	
+	nodeDiv = document.createElement("div");
+	nodeDiv.id = "div" + reviewData[2].metric;
+	
+	nodeSpan = document.createElement("span");
+	nodeSpan.setAttribute('style',"cursor:pointer");
+	nodeSpan.setAttribute('onclick','scrollToTop();populateReview("reviewSection","' + reviewData[2].metric + '")');
+	text = document.createTextNode(reviewData[2].metric);
+	nodeSpan.appendChild(text);
+	nodeDiv.appendChild(nodeSpan);
+	
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeImage = document.createElement("img");
+	nodeImage.src = "/GamePictures/" + reviewData[2].stars + "outof10.png";
+	nodeDiv.appendChild(nodeImage);
+	
+	nodeNav.appendChild(nodeDiv);
+	
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
 	var n = reviewData.length;
 	//for every metric in reviewData...
-	for(var iEveryMetric=2; iEveryMetric<n; iEveryMetric++) {
+	for(var iEveryMetric=3; iEveryMetric<n; iEveryMetric++) {
+		nodeDiv = document.createElement("div");
+		nodeDiv.id = "div" + reviewData[iEveryMetric].metric;
+		
 		nodeSpan = document.createElement("span");
-		nodeSpan.style = "cursor:pointer";
+		nodeSpan.setAttribute('style',"cursor:pointer");
 		nodeSpan.setAttribute('onclick','scrollToTop();populateReview("reviewSection","' + reviewData[iEveryMetric].metric + '")');
 		text = document.createTextNode(reviewData[iEveryMetric].metric);
 		nodeSpan.appendChild(text);
-		nodeNav.appendChild(nodeSpan);
+		nodeDiv.appendChild(nodeSpan);
 		
-		nodeNav.appendChild(document.createElement("br"));
+		nodeDiv.appendChild(document.createElement("br"));
 		
 		nodeImage = document.createElement("img");
 		nodeImage.src = "/GamePictures/" + reviewData[iEveryMetric].stars + "outof5.png";
-		nodeNav.appendChild(nodeImage);
+		nodeDiv.appendChild(nodeImage);
 		
-		nodeNav.appendChild(document.createElement("br"));
+		nodeDiv.appendChild(document.createElement("br"));
 		//text = document.createTextNode('&emsp;&emsp;');
-		//nodeNav.appendChild(text);
+		//nodeDiv.appendChild(text);
+		
+		nodeNav.appendChild(nodeDiv);
 	}
+
 	
 	var replaced = document.getElementById("sidebar");
 	replaced.parentNode.replaceChild(nodeNav,replaced);
+}
+function undoBorder() {
+	var nodePara = document.getElementById("reviewSection");
+	if(nodePara == null)
+		return;
+	var tempStr = nodePara.dataset.metric;
+
+	nodeDiv = document.getElementById("div" + tempStr);
+	nodeDiv.setAttribute("style","");
+}
+function createMainPage() {
+	var nodeNav = document.createElement("nav");
+	nodeNav.id = "sidebar";
+	
+	var nodeSpan;
+	var nodeImage;
+	var text;
+	
+	nodeSpan = document.createElement("span");
+	nodeSpan.setAttribute('style',"cursor:pointer");
+	//nodeSpan.setAttribute('onclick','scrollToTop();populateReview("reviewSection","' + reviewData[iEveryMetric].metric + '")');
+	text = document.createTextNode("News");
+	nodeSpan.appendChild(text);
+	nodeNav.appendChild(nodeSpan);
+	
+	nodeNav.appendChild(document.createElement("br"));
+	
+	nodeImage = document.createElement("img");
+	nodeNav.appendChild(nodeImage);
+	
+	nodeNav.appendChild(document.createElement("br"));
+	
+	nodeSpan = document.createElement("span");
+	nodeSpan.setAttribute('style',"cursor:pointer");
+	//nodeSpan.setAttribute('onclick','scrollToTop();populateReview("reviewSection","' + reviewData[iEveryMetric].metric + '")');
+	text = document.createTextNode("Stats");
+	nodeSpan.appendChild(text);
+	nodeNav.appendChild(nodeSpan);
+	
+	nodeNav.appendChild(document.createElement("br"));
+	//text = document.createTextNode('&emsp;&emsp;');
+	//nodeNav.appendChild(text);
+	
+	nodeImage = document.createElement("img");
+	nodeNav.appendChild(nodeImage);
+	
+	nodeNav.appendChild(document.createElement("br"));
+	
+	var replaced = document.getElementById("sidebar");
+	replaced.parentNode.replaceChild(nodeNav,replaced);
+	
+	
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodePara;
+	
+	nodePara = document.createElement("p");
+	text = document.createTextNode("Welcome to a front page");
+	nodePara.appendChild(text);
+	nodeDiv.appendChild(nodePara);
+	
+	var replaced = document.getElementById("tempDiv");
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
 function findIndexbyMetric(metric) {
 	var n = reviewData.length;
@@ -500,14 +651,14 @@ function scrollToTop() {
 	window.scrollTo(0,0);
 }
 </script>
-<body>
+<body onpageshow="createMainPage()">
 <h3 onclick="goHome()">
 <a href="index.php">Home</a></h3>
 <h2>
 Game Reviews</h2>
 <div class="nav">
 <ul id="menuBar">
-<li class="menuButton" onclick="createMainReview(&quot;tempDiv&quot;)">
+<li class="menuButton" onclick="createMainPage()">
 Main</li>
 <li class="menuButton" onclick="createRetrieveReviews(&quot;tempDiv&quot;)">
 Search Reviews</li>
@@ -520,9 +671,7 @@ Write Review</li>
 
 </nav>
 <div id="tempDiv">
-<h3 style="text-align: center;">Sequence Review</h3>
-<img src="/GamePictures/header.jpg"></img>
-<p id="reviewSection"></p>
+
 </div>
 
 <footer>Testing</footer>

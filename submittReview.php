@@ -17,6 +17,10 @@ for($i=0; $i<$length; $i++) {	//First two lines of 'metrics' are game Title and 
 }
 fclose($handle);
 
+$input = $metrics[1];
+$output = ".\\GamePictures\\" . $metrics[0] . '.jpg';
+file_put_contents($output, file_get_contents($input));
+
 //Mark review in database
 
 return;

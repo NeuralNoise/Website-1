@@ -18,12 +18,16 @@ $fileLocation = ".\\GameReviews\\review" . $searchTerm . ".txt";
 if (file_exists($fileLocation)) {
 	$handle = fopen($fileLocation,"r");
 	$data = fread($handle,filesize($fileLocation));
-	echo "<a href=\"" . "gameReviews.php" . "\" target= \"_blank\">" . $searchTerm . "</a>";
+	//echo "<a href=\"" . "gameReviews.php" . "\" target= \"_blank\">" . $searchTerm . "</a>";
+	echo "<br><br>";
+	echo "<input type=\"button\" onclick=\"createNav();populateReview('reviewSection','Overall')\" value=\"" . $searchTerm . "\"></input>";
 	echo "<br>";
 	echo "][";
 	echo $data;
 	fclose($handle);
 }
+else
+	echo "File does not exist";
 
 return;
 
