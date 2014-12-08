@@ -13,14 +13,14 @@ if (empty($searchTerm)) {
 	echo "</ul>";
 */
 }
-$fileLocation = ".\\GameReviews\\review" . $searchTerm . ".txt";
+$fileLocation = ".\\GameUser\\user" . $searchTerm . ".txt";
 
 if (file_exists($fileLocation)) {
 	$handle = fopen($fileLocation,"r");
 	$data = fread($handle,filesize($fileLocation));
 	//echo "<a href=\"" . "gameReviews.php" . "\" target= \"_blank\">" . $searchTerm . "</a>";
 	echo "<br><br>";
-	echo "<input type=\"button\" value=\"" . $searchTerm . "\"></input>";
+	echo "<input type=\"button\" onclick=\"populateUser('reviewSection','Overall')\" value=\"" . $searchTerm . "\"></input>";
 	echo "<br>";
 	echo "][";
 	echo $data;

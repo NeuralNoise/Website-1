@@ -8,6 +8,7 @@
 //Globals
 var metrics;	
 var reviewData = "unpopulated";	//Array. Holds game review data retrieved from file. First two elements are Game Title, Game Image. The rest are the metrics in descending order
+var userData = "unpopulated";
 
 function retrieveReviews(str) {
 	if (window.XMLHttpRequest) {
@@ -33,9 +34,41 @@ function retrieveReviews(str) {
 		xmlhttp.send();
 	}
 }
+function retrieveUsers(str) {
+	if (window.XMLHttpRequest) {
+	// code for IE7+, Firefox, Chrome, Opera, Safari
+	xmlhttp=new XMLHttpRequest();
+	} else { // code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			var pos = xmlhttp.responseText.indexOf("]["); //document.getElementById("outputLinks").innerHTML=xmlhttp.responseText.slice(0,pos);
+			var processData;
+			processData = xmlhttp.responseText.slice(pos+2);
+			if(processData.slice(0,2) == "~~") {
+				var passString = processData.slice(2);
+				processUserData(passString);
+				editUser();
+				createMainPage();
+			}
+		}
+	}
+	if(str !== "") {
+		xmlhttp.open("GET","retrieveUsers.php?q="+str,true);
+		xmlhttp.send();
+	}
+}
 function createRetrieveReviews(id) {
 	var nodeDiv = document.createElement("div");
 	nodeDiv.id = "tempDiv";
+	
+	var nodeHeader = document.createElement("h4");
+	var text = document.createTextNode("Search Reviews");
+	nodeHeader.appendChild(text);
+	
+	nodeDiv.appendChild(nodeHeader);
+	nodeDiv.appendChild(document.createElement("br"));
 	
 	var nodeForm = document.createElement("form");
 	//var text = document.createTextNode("Enter a URL to save: ");
@@ -48,12 +81,10 @@ function createRetrieveReviews(id) {
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
 	nodeInput.value = "Search";
-	nodeInput.onclick = "retrieveLinks(searchInput.value)";
 	nodeInput.setAttribute("onclick","retrieveReviews(searchInput.value)");
 	nodeForm.appendChild(nodeInput);
 	
 	nodeDiv.appendChild(nodeForm);
-	
 	nodeDiv.appendChild(document.createElement("br"));
 	
 	nodeInput = document.createElement("input");
@@ -73,7 +104,72 @@ function createRetrieveReviews(id) {
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
+function createRetrieveUser(id) {
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodeHeader = document.createElement("h4");
+	var text = document.createTextNode("Search Users");
+	nodeHeader.appendChild(text);
+	
+	nodeDiv.appendChild(nodeHeader);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodeForm = document.createElement("form");
+	//var text = document.createTextNode("Enter a URL to save: ");
+	//nodeForm.appendChild(text);
+	var nodeInput = document.createElement("input");
+	nodeInput.type = "text";
+	nodeInput.id = "searchInput";
+	nodeInput.setAttribute("onsubmit","retrieveUsers(searchInput.value)");
+	nodeForm.appendChild(nodeInput);
+	nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Search";
+	nodeInput.setAttribute("onclick","retrieveUsers(searchInput.value)");
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.setAttribute("onclick","retrieveUsersAll()");
+	nodeInput.value = "All";
+	
+	nodeDiv.appendChild(nodeInput);
+	
+	var nodePara = document.createElement("p");
+	var nodeSpan = document.createElement("span");
+	nodeSpan.id = "outputLinks";
+	nodePara.appendChild(nodeSpan);
+	
+	nodeDiv.appendChild(nodePara);
+	
+	var replaced = document.getElementById(id);
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
+}
 function retrieveReviewsAll() {
+	var nodeSpan = document.createElement("span");
+	nodeSpan.appendChild(document.createElement("br"));
+	
+	var nodeForm = document.createElement("form");
+	
+	var nodeInput;
+	var alphabetString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	for(var i=0, l=alphabetString.length; i<l; i++) {
+		nodeInput = document.createElement("input");
+		nodeInput.type = "button";
+		nodeInput.value = alphabetString.charAt(i);
+		nodeForm.appendChild(nodeInput);
+	}
+	
+	nodeSpan.appendChild(nodeForm);
+	
+	var replaced = document.getElementById("outputLinks");
+	replaced.parentNode.replaceChild(nodeSpan,replaced);
+}
+function retrieveUsersAll() {
 	var nodeSpan = document.createElement("span");
 	nodeSpan.appendChild(document.createElement("br"));
 	
@@ -140,9 +236,16 @@ function populateReview(id,metric) {
 	nodePara.id=id;
 	var text = document.createTextNode(eval("reviewData[" + index + "].metric"));
 	nodePara.appendChild(text);
+	nodePara.appendChild(document.createElement("br"));
+	var nodeSpan = document.createElement("span");
+	nodeSpan.setAttribute("style","font-size: .875em; text-decoration: underline; cursor:pointer;");
+	text = document.createTextNode("How do I calculate this metric?");
+	nodeSpan.appendChild(text);
+	nodePara.appendChild(nodeSpan);
 	nodePara.appendChild(document.createElement("br"));nodePara.appendChild(document.createElement("br"));
 	text = document.createTextNode(eval("reviewData[" + index + "].text"));
 	nodePara.appendChild(text);
+	nodePara.setAttribute("style","line-height: 200%;");
 	nodePara.setAttribute("data-metric",metric);
 	
 	var replaced = document.getElementById(id);
@@ -160,6 +263,13 @@ function createWriteReview(id) {
 	var nodeForm;
 	var nodeInput;
 	var text;
+	
+	var nodeHeader = document.createElement("h4");
+	var text = document.createTextNode("Write Review");
+	nodeHeader.appendChild(text);
+	
+	nodeDiv.appendChild(nodeHeader);
+	nodeDiv.appendChild(document.createElement("br"));
 	
 	text = document.createTextNode("Select metrics to review:");
 	nodeDiv.appendChild(text);
@@ -406,6 +516,109 @@ function createFillinMetrics(id) {
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
+function createFillinMetricsUser(id) {
+	var checkboxes = document.getElementsByName("metric");
+	metrics = new Array();
+	var metric;
+	
+	metricI = new Object();
+	metricI.value = "Overall";
+	metricI.check = true;
+	metricI.stars = 0;
+	metrics.push(metricI);
+	for(var i=0, n=checkboxes.length;i < n; i++) {
+		metricI = new Object();
+		metricI.value = checkboxes[i].value;
+		if(checkboxes[i].checked)
+			metricI.check = true;
+		else
+			metricI.check = false;
+		metricI.stars = 0;
+		metrics.push(metricI);
+	}
+	
+	var tempNameInput = document.getElementById("usernameInput");
+	var name = tempNameInput.value;
+	
+	
+	
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodeTextarea;
+	var nodePara;
+	var nodeForm;
+	var nodeInput;
+	var nodeImage;
+	var text;
+	
+	nodeForm = document.createElement("form");
+	nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Submit";
+	nodeInput.setAttribute("onclick",'saveUser("' + name + '")');
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodePara = document.createElement("p");
+	nodePara.id = "outputTest";
+	
+	nodeDiv.appendChild(nodePara);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	//Input for overall score
+	nodePara = document.createElement("p");
+	text = document.createTextNode(metrics[0].value);
+	nodePara.appendChild(text);
+	
+	nodeDiv.appendChild(nodePara);
+	
+	text = document.createTextNode("Describe how you evaluate this metric:");
+	nodeDiv.appendChild(text);
+	
+	nodeTextarea = document.createElement("textarea");
+	nodeTextarea.name = "metric";
+	nodeTextarea.id = metrics[0].value;
+	nodeTextarea.setAttribute("data-stars",0);
+	nodeTextarea.rows = 20;
+	nodeTextarea.cols = 50;
+	
+	nodeDiv.appendChild(nodeTextarea);
+		
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
+	//Create the input for each metric (overall score has already been processed)
+	for(var iEveryMetric=1, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
+		if (metrics[iEveryMetric].check == false)
+			continue;
+			
+		nodePara = document.createElement("p");
+		text = document.createTextNode(metrics[iEveryMetric].value);
+		nodePara.appendChild(text);
+		
+		nodeDiv.appendChild(nodePara);
+		
+		text = document.createTextNode("Describe how you evaluate this metric:");
+		nodeDiv.appendChild(text);
+		
+		nodeTextarea = document.createElement("textarea");
+		nodeTextarea.name = "metric";
+		nodeTextarea.id = metrics[iEveryMetric].value;
+		nodeTextarea.setAttribute("data-stars",0);
+		nodeTextarea.rows = 20;
+		nodeTextarea.cols = 50;
+		
+		nodeDiv.appendChild(nodeTextarea);
+	}
+	
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
+	
+	var replaced = document.getElementById(id);
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
+}
 function saveReview() {
 	var ch29 = String.fromCharCode(29);
 	var ch30 = String.fromCharCode(30);
@@ -420,6 +633,8 @@ function saveReview() {
 		submittString = submittString + ch29 + metrics[iEveryMetric].value;
 		if(metrics[iEveryMetric].check == true) {
 			for(var iEveryTextarea=0; iEveryTextarea<textAreaS.length; iEveryTextarea++) {
+				if(textAreaS[iEveryTextarea].value == "")
+					continue;
 				if(metrics[iEveryMetric].value == textAreaS[iEveryTextarea].id) {
 					submittString = submittString + ch30 + textAreaS[iEveryTextarea].value;
 					submittString = submittString + ch30 + textAreaS[iEveryTextarea].dataset.stars;
@@ -431,6 +646,33 @@ function saveReview() {
 	}
 	
 	submittReview(submittString);
+}
+function saveUser(name) {
+	var ch29 = String.fromCharCode(29);
+	var ch30 = String.fromCharCode(30);
+	var submittString = "";
+	submittString = name;
+	//var gameImage = document.getElementById("gameImageUrlInput");
+	//submittString = submittString + ch29 + gameImage.value;
+	
+	var textAreaS = document.getElementsByName("metric");
+	for(var iEveryMetric=0, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
+		submittString = submittString + ch29 + metrics[iEveryMetric].value;
+		if(metrics[iEveryMetric].check == true) {
+			for(var iEveryTextarea=0; iEveryTextarea<textAreaS.length; iEveryTextarea++) {
+				if(textAreaS[iEveryTextarea].value == "")
+					continue;
+				if(metrics[iEveryMetric].value == textAreaS[iEveryTextarea].id) {
+					submittString = submittString + ch30 + textAreaS[iEveryTextarea].value;
+					//submittString = submittString + ch30 + textAreaS[iEveryTextarea].dataset.stars;
+				}
+			}
+		}
+		else
+			submittString = submittString + ch30 + ch30 + "0";
+	}
+	
+	submittUser(submittString);
 }
 function submittReview(str) {
 	if (window.XMLHttpRequest) {
@@ -446,6 +688,24 @@ function submittReview(str) {
 	}
 	if(str !== "") {
 		xmlhttp.open("POST","submittReview.php",true);
+		xmlhttp.send(str);
+		//createWebsitePreview("tempDiv",str);
+	}
+}
+function submittUser(str) {
+	if (window.XMLHttpRequest) {
+	// code for IE7+, Firefox, Chrome, Opera, Safari
+	xmlhttp=new XMLHttpRequest();
+	} else { // code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+		  document.getElementById("outputTest").innerHTML=xmlhttp.responseText;
+		}
+	}
+	if(str !== "") {
+		xmlhttp.open("POST","submittUser.php",true);
 		xmlhttp.send(str);
 		//createWebsitePreview("tempDiv",str);
 	}
@@ -511,6 +771,24 @@ function processReviewData(processData) {
 	}
 	reviewData = tempArray;
 }
+function processUserData(processData) {
+	var ch29 = String.fromCharCode(29);
+	var ch30 = String.fromCharCode(30);
+	
+	processData = processData.split(ch29);
+	var tempArray = new Array();
+	var tempData;
+	var metricData;
+	for(var iEveryMetric=0, n=processData.length-1;iEveryMetric<n;iEveryMetric++) {	//the -1 in length skips the last element, which is a waste element
+		metricData = new Object();
+		tempData = processData[iEveryMetric].split(ch30);
+		metricData.metric = tempData[0];
+		metricData.text = tempData[1];
+		
+		tempArray.push(metricData);
+	}
+	userData = tempArray;
+}
 function createNav() {
 	var nodeNav = document.createElement("nav");
 	nodeNav.id = "sidebar";
@@ -569,6 +847,107 @@ function createNav() {
 	
 	var replaced = document.getElementById("sidebar");
 	replaced.parentNode.replaceChild(nodeNav,replaced);
+}
+function editUser() {
+	var temp = document.getElementById(userHeader);
+	var text = document.createTextNode("Logged in as " + userData[0].metric);
+	
+	var replaced = document.getElementById("userHeader").childNodes[0];
+	replaced.parentNode.replaceChild(text,replaced);
+}
+function createUser(id) {
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodeHeader = document.createElement("h4");
+	var text = document.createTextNode("Create User");
+	nodeHeader.appendChild(text);
+	
+	nodeDiv.appendChild(nodeHeader);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodeForm = document.createElement("form");
+	var text = document.createTextNode("Enter name: ");
+	nodeForm.appendChild(text);
+	var nodeInput = document.createElement("input");
+	nodeInput.type = "text";
+	nodeInput.id = "usernameInput";
+	//nodeInput.setAttribute("onsubmit","retrieveReviews(searchInput.value)");
+	nodeForm.appendChild(nodeInput);
+	/*nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Search";
+	nodeInput.onclick = "retrieveLinks(searchInput.value)";
+	nodeInput.setAttribute("onclick","retrieveReviews(searchInput.value)");
+	nodeForm.appendChild(nodeInput);*/
+	
+	nodeForm.appendChild(document.createElement("br"));nodeForm.appendChild(document.createElement("br"));
+	
+	text = document.createTextNode("Select which metrics you will generally use:");
+	nodeForm.appendChild(text);
+	nodeForm.appendChild(document.createElement("br"));nodeForm.appendChild(document.createElement("br"));
+	
+	nodeInput = document.createElement("input");
+	nodeInput.type = "checkbox";
+	//nodeInput.name = "metric";
+	nodeInput.value = "All";
+	nodeInput.setAttribute("onclick","checkAll(this)");
+	nodeForm.appendChild(nodeInput);
+	text = document.createTextNode("All");
+	nodeForm.appendChild(text);
+	nodeForm.appendChild(document.createElement("br"));
+	nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Difficulty");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Graphics");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Atmosphere");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Atmosphere: Style");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Atmosphere: Setting");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Atmosphere: Sound");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Pacing");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Narrative");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Consistency");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Literary Merit");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Story: Characters");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Engine");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Engine: Physics");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Engine: Latency");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Systems");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Systems: UI");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Systems: Progress");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Gameplay");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Gameplay: AI");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Originality");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"As Promised");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Impact");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Value");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Value: Dollars");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Value: Time");nodeForm.appendChild(document.createElement("br"));
+	createWriteReviewMetricCheckbox(nodeForm,"Value: Brainfood");nodeForm.appendChild(document.createElement("br"));
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeForm = document.createElement("form");
+	nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Submit";
+	nodeInput.onclick = 'createFillinMetrics("tempDiv")';
+	nodeInput.setAttribute("onclick",'createFillinMetricsUser("tempDiv")');
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodePara = document.createElement("p");
+	var nodeSpan = document.createElement("span");
+	nodeSpan.id = "outputLinks";
+	nodePara.appendChild(nodeSpan);
+	
+	nodeDiv.appendChild(nodePara);
+	
+	var replaced = document.getElementById(id);
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
 function undoBorder() {
 	var nodePara = document.getElementById("reviewSection");
@@ -652,7 +1031,9 @@ function scrollToTop() {
 }
 </script>
 <body onpageshow="createMainPage()">
-<h3 onclick="goHome()">
+<h3 style="text-align: right;font-size: .875em;">
+<span id="userHeader" style="cursor:pointer;" onclick="createRetrieveUser(&quot;tempDiv&quot;)">Click to log in</span></h3>
+<h3>
 <a href="index.php">Home</a></h3>
 <h2>
 Game Reviews</h2>
@@ -664,6 +1045,9 @@ Main</li>
 Search Reviews</li>
 <li class="menuButton" onclick="createWriteReview(&quot;tempDiv&quot;)">
 Write Review</li>
+<li class="menuButton" onclick="createUser(&quot;tempDiv&quot;)">
+Create User
+</li>
 </ul>
 </div>
 <br><br>

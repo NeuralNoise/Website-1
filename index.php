@@ -18,5 +18,7 @@ Organizing Stuff</h3>
 <a href="music.php">Music</a></h4>
 <h4>
 <a href="gameReviews.php">Game Reviews</a></h4> 
+<h4>
+<a href="characterBurner.php">Character Burner</a></h4>
 </body>
 </html>
