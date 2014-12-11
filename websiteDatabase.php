@@ -111,6 +111,7 @@ function createRetrieveWebsites(id) {
 	nodeDiv.id = "tempDiv";
 	
 	var nodeForm = document.createElement("form");
+	nodeForm.setAttribute("onsubmit","return false;");
 	//var text = document.createTextNode("Enter a URL to save: ");
 	//nodeForm.appendChild(text);
 	nodeForm.autocomplete="off";
@@ -160,6 +161,7 @@ function createSaveWebsite(id) {
 	nodeDiv.id = "tempDiv";
 	
 	var nodeForm = document.createElement("form");
+	nodeForm.setAttribute("onsubmit","return false;");
 	var text = document.createTextNode("Enter a URL to save: ");
 	nodeForm.appendChild(text);
 	nodeForm.autocomplete="off";

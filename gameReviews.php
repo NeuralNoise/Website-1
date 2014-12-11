@@ -6,9 +6,16 @@
 </head>
 <script>
 //Globals
+
+//TODO: Populate reviewData with writer's metric descriptions. Store it in reviewData to preserve versioning
+
 var metrics;	
-var reviewData = "unpopulated";	//Array. Holds game review data retrieved from file. First two elements are Game Title, Game Image. The rest are the metrics in descending order
-var userData = "unpopulated";
+var reviewData = "unpopulated";	//Array. Holds game review data retrieved from file. First three elements are Game Title, Game Image, User. The rest are the metrics in descending order
+	var metricDataReviewData = 3; //Beginning of metrics in reviewData
+var userDescriptionData = "unpopulated";
+	var metricDataUserDescriptionData = 0;
+var userData = "unpopulated"; //Array. Holds logged-in user data retrieved from file. First element is User name. The rest are the metrics in descending order
+	var metricDataUserData = 1; //Beginning of metrics in userData
 
 function retrieveReviews(str) {
 	if (window.XMLHttpRequest) {
@@ -22,11 +29,10 @@ function retrieveReviews(str) {
 			var pos = xmlhttp.responseText.indexOf("]["); document.getElementById("outputLinks").innerHTML=xmlhttp.responseText.slice(0,pos);
 			var processData;
 			processData = xmlhttp.responseText.slice(pos+2);
-			if(processData.slice(0,2) == "~~") {
-				var passString = processData.slice(2);
-				processReviewData(passString);
+			//if(processData.slice(0,2) == "~~") {	//Separate html display data from review data
+				processReviewData(processData);
 				//createNav();
-			}
+			//}
 		}
 	}
 	if(str !== "") {
@@ -46,12 +52,11 @@ function retrieveUsers(str) {
 			var pos = xmlhttp.responseText.indexOf("]["); //document.getElementById("outputLinks").innerHTML=xmlhttp.responseText.slice(0,pos);
 			var processData;
 			processData = xmlhttp.responseText.slice(pos+2);
-			if(processData.slice(0,2) == "~~") {
-				var passString = processData.slice(2);
-				processUserData(passString);
+			//if(processData.slice(0,2) == "~~") {	//Separate html display data from review data
+				processUserData(processData);
 				editUser();
 				createMainPage();
-			}
+			//}
 		}
 	}
 	if(str !== "") {
@@ -71,6 +76,7 @@ function createRetrieveReviews(id) {
 	nodeDiv.appendChild(document.createElement("br"));
 	
 	var nodeForm = document.createElement("form");
+	nodeForm.setAttribute("onsubmit","return false;");
 	//var text = document.createTextNode("Enter a URL to save: ");
 	//nodeForm.appendChild(text);
 	var nodeInput = document.createElement("input");
@@ -195,20 +201,42 @@ function createMainReview(id) {
 	var nodeDiv = document.createElement("div");
 	nodeDiv.id = "tempDiv";
 	
+	if(reviewData == "unpopulated") {
+		var nodeHeader = document.createElement("h3");
+		text = document.createTextNode("No review loaded");
+		nodeHeader.appendChild(text);
+		nodeHeader.setAttribute("style","text-align: center;");
+		
+		nodeDiv.appendChild(nodeHeader);
+	
+		var replaced = document.getElementById(id);
+		replaced.parentNode.replaceChild(nodeDiv,replaced);
+		return;
+	}
+	
 	var text;
 	var nodeHeader = document.createElement("h3");
-	if(reviewData !== "unpopulated") {
+	//if(reviewData !== "unpopulated") {
 		text = document.createTextNode(reviewData[0].metric + " Review");
 		nodeHeader.appendChild(text);
-	}
+	//}
+	nodeHeader.setAttribute("style","text-align: center;");
+	
+	nodeDiv.appendChild(nodeHeader);
+	
+	var nodeHeader = document.createElement("h4");
+	//if(reviewData !== "unpopulated") {
+		text = document.createTextNode("Written by: " + reviewData[2].metric);
+		nodeHeader.appendChild(text);
+	//}
 	nodeHeader.setAttribute("style","text-align: center;");
 	
 	nodeDiv.appendChild(nodeHeader);
 	
 	var nodeImage = document.createElement("img");
-	if(reviewData !== "unpopulated") {
+	//if(reviewData !== "unpopulated") {
 		nodeImage.setAttribute("src","/GamePictures/" + reviewData[1].metric + ".jpg");
-	}
+	//}
 	
 	nodeDiv.appendChild(nodeImage);
 	
@@ -229,16 +257,29 @@ function populateReview(id,metric) {
 	undoBorder();
 
 	createMainReview("tempDiv");
+	
+	if(reviewData == "unpopulated")
+		return;
 
-	var index = findIndexbyMetric(metric);
+	//var index = findIndexbyMetric(metric);
+	var index;
+	var n = reviewData.length;
+	for(var i=metricDataReviewData; i<n; i++) {
+		if(reviewData[i].metric == metric)
+			index = i;
+	}
 	
 	var nodePara = document.createElement("p");
 	nodePara.id=id;
-	var text = document.createTextNode(eval("reviewData[" + index + "].metric"));
-	nodePara.appendChild(text);
-	nodePara.appendChild(document.createElement("br"));
 	var nodeSpan = document.createElement("span");
+	nodeSpan.id = "metricHeader";
+	var text = document.createTextNode(eval("reviewData[" + index + "].metric"));
+	nodeSpan.appendChild(text);
+	nodePara.appendChild(nodeSpan);
+	nodePara.appendChild(document.createElement("br"));
+	nodeSpan = document.createElement("span");
 	nodeSpan.setAttribute("style","font-size: .875em; text-decoration: underline; cursor:pointer;");
+	nodeSpan.setAttribute("onclick","populateMetricDescription()");
 	text = document.createTextNode("How do I calculate this metric?");
 	nodeSpan.appendChild(text);
 	nodePara.appendChild(nodeSpan);
@@ -256,6 +297,42 @@ function populateReview(id,metric) {
 	nodeDiv.setAttribute("style","border-style: groove;");
 	var test;
 }
+function populateMetricDescription() {
+	var metricH = document.getElementById("metricHeader");
+	var metric = metricH.childNodes[0].data;
+	
+	if(metricH.childElementCount > 0) {
+		return;
+	}
+	
+	metricH.appendChild(document.createElement("br"));
+	
+	if(userDescriptionData == "unpopulated") {
+		metricH.appendChild(document.createTextNode("no description written"));
+		
+		var replaced = document.getElementById("metricHeader");
+		replaced.parentNode.replaceChild(metricH,replaced);
+		return;
+	}
+	
+	var index;
+	var n = userDescriptionData.length;
+	for(var i=metricDataUserData; i<n; i++) {
+		if(userDescriptionData[i].metric == metric)
+			index = i;
+	}
+	
+	var text;
+	if(index == "")
+		text = "No description written";
+	else
+		text = document.createTextNode(eval("userDescriptionData[" + index + "].text"));
+	metricH.appendChild(text);
+	
+	
+	var replaced = document.getElementById("metricHeader");
+	replaced.parentNode.replaceChild(metricH,replaced);
+}
 function createWriteReview(id) {
 	var nodeDiv = document.createElement("div");
 	nodeDiv.id = "tempDiv";
@@ -269,6 +346,30 @@ function createWriteReview(id) {
 	nodeHeader.appendChild(text);
 	
 	nodeDiv.appendChild(nodeHeader);
+	
+	if(userData == "unpopulated") {
+		var nodeHeader = document.createElement("h5");
+		var text = document.createTextNode("Log in to write reviews");
+		nodeHeader.appendChild(text);
+		
+		nodeDiv.appendChild(nodeHeader);
+		nodeDiv.appendChild(document.createElement("br"));
+		
+		var replaced = document.getElementById(id);
+		replaced.parentNode.replaceChild(nodeDiv,replaced);
+		return;
+	}
+	
+	var nodeHeader = document.createElement("h5");
+	var tempStr;
+	if(userData == "unpopulated")
+		tempStr = "Not logged in";
+	else
+		tempStr = "Logged in as: " + userData[0].metric;
+	var text = document.createTextNode(tempStr);
+	nodeHeader.appendChild(text);
+	
+	nodeDiv.appendChild(nodeHeader);
 	nodeDiv.appendChild(document.createElement("br"));
 	
 	text = document.createTextNode("Select metrics to review:");
@@ -276,6 +377,7 @@ function createWriteReview(id) {
 	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
 	
 	var nodeForm = document.createElement("form");
+	nodeForm.setAttribute("onsubmit","return false;");
 	var nodeInput;
 	var text;
 	nodeInput = document.createElement("input");
@@ -368,10 +470,10 @@ function createFillinMetrics(id) {
 	metricI.check = true;
 	metricI.stars = 0;
 	metrics.push(metricI);
-	for(var i=0, n=checkboxes.length;i < n; i++) {
+	for(var iEveryCheckbox=0, n=checkboxes.length;iEveryCheckbox < n; iEveryCheckbox++) {
 		metricI = new Object();
-		metricI.value = checkboxes[i].value;
-		if(checkboxes[i].checked)
+		metricI.value = checkboxes[iEveryCheckbox].value;
+		if(checkboxes[iEveryCheckbox].checked)
 			metricI.check = true;
 		else
 			metricI.check = false;
@@ -427,7 +529,7 @@ function createFillinMetrics(id) {
 	nodeDiv.appendChild(nodeForm);
 	nodeDiv.appendChild(document.createElement("br"));
 	
-	//Input for overall score
+	//Create the input for overall score
 	nodePara = document.createElement("p");
 	text = document.createTextNode(metrics[0].value);
 	nodePara.appendChild(text);
@@ -568,7 +670,7 @@ function createFillinMetricsUser(id) {
 	nodeDiv.appendChild(nodePara);
 	nodeDiv.appendChild(document.createElement("br"));
 	
-	//Input for overall score
+	//Create the input for overall score
 	nodePara = document.createElement("p");
 	text = document.createTextNode(metrics[0].value);
 	nodePara.appendChild(text);
@@ -627,6 +729,8 @@ function saveReview() {
 	submittString = gameTitle.value;
 	var gameImage = document.getElementById("gameImageUrlInput");
 	submittString = submittString + ch29 + gameImage.value;
+	var gameUser = userData[0].metric;
+	submittString = submittString + ch29 + gameUser;
 	
 	var textAreaS = document.getElementsByName("metric");
 	for(var iEveryMetric=0, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
@@ -643,6 +747,13 @@ function saveReview() {
 		}
 		else
 			submittString = submittString + ch30 + ch30 + "0";
+	}
+	
+	submittString = submittString + "~~";	//Separates the written review from the user metric descriptions
+	
+	for(var iEveryMetric=metricDataUserData, n=userData.length;iEveryMetric < n; iEveryMetric++) {
+		submittString = submittString + ch29 + userData[iEveryMetric].metric;
+		submittString = submittString + ch30 + userData[iEveryMetric].text;
 	}
 	
 	submittReview(submittString);
@@ -757,19 +868,40 @@ function processReviewData(processData) {
 	var ch29 = String.fromCharCode(29);
 	var ch30 = String.fromCharCode(30);
 	
-	processData = processData.split(ch29);
+	processData = processData.split('~~');
+	
+	var processReviewData = processData[0].split(ch29);
 	var tempArray = new Array();
 	var tempData;
 	var metricData;
-	for(var iEveryMetric=0, n=processData.length-1;iEveryMetric<n;iEveryMetric++) {	//the -1 in length skips the last element, which is a waste element
+	for(var iEveryMetric=0, n=processReviewData.length-1;iEveryMetric<n;iEveryMetric++) {	//the -1 in length skips the last element, which is a waste element
 		metricData = new Object();
-		tempData = processData[iEveryMetric].split(ch30);
+		tempData = processReviewData[iEveryMetric].split(ch30);
 		metricData.metric = tempData[0];
 		metricData.text = tempData[1];
 		metricData.stars = tempData[2];
 		tempArray.push(metricData);
 	}
 	reviewData = tempArray;
+	
+	var test = processData[1];
+	var test = processData[1];
+	if(processData[1] == undefined)
+		return;
+	
+	var processUserData = processData[1].split(ch29);
+	var tempArray = new Array();
+	var tempData;
+	var metricData;
+	for(var iEveryMetric=0, n=processUserData.length-1;iEveryMetric<n;iEveryMetric++) {
+		metricData = new Object();
+		tempData = processUserData[iEveryMetric].split(ch30);
+		metricData.metric = tempData[0];
+		metricData.text = tempData[1];
+		tempArray.push(metricData);
+	}
+	userDescriptionData = tempArray;
+
 }
 function processUserData(processData) {
 	var ch29 = String.fromCharCode(29);
@@ -778,14 +910,14 @@ function processUserData(processData) {
 	processData = processData.split(ch29);
 	var tempArray = new Array();
 	var tempData;
-	var metricData;
+	var data;
 	for(var iEveryMetric=0, n=processData.length-1;iEveryMetric<n;iEveryMetric++) {	//the -1 in length skips the last element, which is a waste element
-		metricData = new Object();
+		data = new Object();
 		tempData = processData[iEveryMetric].split(ch30);
-		metricData.metric = tempData[0];
-		metricData.text = tempData[1];
+		data.metric = tempData[0];
+		data.text = tempData[1];
 		
-		tempArray.push(metricData);
+		tempArray.push(data);
 	}
 	userData = tempArray;
 }
@@ -799,19 +931,19 @@ function createNav() {
 	var text;
 	
 	nodeDiv = document.createElement("div");
-	nodeDiv.id = "div" + reviewData[2].metric;
+	nodeDiv.id = "div" + reviewData[metricDataReviewData].metric;	//'metricDataReviewData' is the location of the first metric (which is Overall)
 	
 	nodeSpan = document.createElement("span");
 	nodeSpan.setAttribute('style',"cursor:pointer");
-	nodeSpan.setAttribute('onclick','scrollToTop();populateReview("reviewSection","' + reviewData[2].metric + '")');
-	text = document.createTextNode(reviewData[2].metric);
+	nodeSpan.setAttribute('onclick','scrollToTop();populateReview("reviewSection","' + reviewData[metricDataReviewData].metric + '")');
+	text = document.createTextNode(reviewData[metricDataReviewData].metric);
 	nodeSpan.appendChild(text);
 	nodeDiv.appendChild(nodeSpan);
 	
 	nodeDiv.appendChild(document.createElement("br"));
 	
 	nodeImage = document.createElement("img");
-	nodeImage.src = "/GamePictures/" + reviewData[2].stars + "outof10.png";
+	nodeImage.src = "/GamePictures/" + reviewData[metricDataReviewData].stars + "outof10.png";
 	nodeDiv.appendChild(nodeImage);
 	
 	nodeNav.appendChild(nodeDiv);
@@ -819,8 +951,8 @@ function createNav() {
 	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
 	
 	var n = reviewData.length;
-	//for every metric in reviewData...
-	for(var iEveryMetric=3; iEveryMetric<n; iEveryMetric++) {
+	//for every metric in reviewData... (skipping Overall)
+	for(var iEveryMetric=metricDataReviewData+1; iEveryMetric<n; iEveryMetric++) {
 		nodeDiv = document.createElement("div");
 		nodeDiv.id = "div" + reviewData[iEveryMetric].metric;
 		
@@ -850,7 +982,7 @@ function createNav() {
 }
 function editUser() {
 	var temp = document.getElementById(userHeader);
-	var text = document.createTextNode("Logged in as " + userData[0].metric);
+	var text = document.createTextNode("Logged in as: " + userData[0].metric);
 	
 	var replaced = document.getElementById("userHeader").childNodes[0];
 	replaced.parentNode.replaceChild(text,replaced);
@@ -867,6 +999,7 @@ function createUser(id) {
 	nodeDiv.appendChild(document.createElement("br"));
 	
 	var nodeForm = document.createElement("form");
+	nodeForm.setAttribute("onsubmit","return false;");
 	var text = document.createTextNode("Enter name: ");
 	nodeForm.appendChild(text);
 	var nodeInput = document.createElement("input");
@@ -1015,7 +1148,7 @@ function createMainPage() {
 }
 function findIndexbyMetric(metric) {
 	var n = reviewData.length;
-	for(var i=2; i<n; i++) {
+	for(var i=metricDataReviewData; i<n; i++) {
 		if(reviewData[i].metric == metric)
 			return i;
 	}

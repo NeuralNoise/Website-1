@@ -20,7 +20,7 @@ if (file_exists($fileLocation)) {
 	$data = fread($handle,filesize($fileLocation));
 	//echo "<a href=\"" . "gameReviews.php" . "\" target= \"_blank\">" . $searchTerm . "</a>";
 	echo "<br><br>";
-	echo "<input type=\"button\" value=\"" . $searchTerm . "\"></input>";
+	echo "<input type=\"button\" onclick=\"createNav();populateReview('reviewSection','Overall')\" value=\"" . $searchTerm . "\"></input>";
 	echo "<br>";
 	echo "][";
 	echo $data;
