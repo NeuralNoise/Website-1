@@ -11,11 +11,11 @@
 
 var metrics;	
 var reviewData = "unpopulated";	//Array. Holds game review data retrieved from file. First three elements are Game Title, Game Image, User. The rest are the metrics in descending order
-	var metricDataReviewData = 3; //Beginning of metrics in reviewData
+	var metricDataReviewData = 3; //Beginning of metric data in reviewData
 var userDescriptionData = "unpopulated";
 	var metricDataUserDescriptionData = 0;
 var userData = "unpopulated"; //Array. Holds logged-in user data retrieved from file. First element is User name. The rest are the metrics in descending order
-	var metricDataUserData = 1; //Beginning of metrics in userData
+	var metricDataUserData = 1; //Beginning of metric data in userData
 
 function retrieveReviews(str) {
 	if (window.XMLHttpRequest) {
@@ -26,7 +26,7 @@ function retrieveReviews(str) {
 	}
 	xmlhttp.onreadystatechange=function() {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			var pos = xmlhttp.responseText.indexOf("]["); document.getElementById("outputLinks").innerHTML=xmlhttp.responseText.slice(0,pos);
+			var pos = xmlhttp.responseText.indexOf("]["); //document.getElementById("outputLinks").innerHTML=xmlhttp.responseText.slice(0,pos);
 			var processData;
 			processData = xmlhttp.responseText.slice(pos+2);
 			//if(processData.slice(0,2) == "~~") {	//Separate html display data from review data
@@ -82,12 +82,12 @@ function createRetrieveReviews(id) {
 	var nodeInput = document.createElement("input");
 	nodeInput.type = "text";
 	nodeInput.id = "searchInput";
-	nodeInput.setAttribute("onsubmit","retrieveReviews(searchInput.value)");
+	nodeInput.setAttribute("onsubmit","listResultsSearch(searchInput.value)");
 	nodeForm.appendChild(nodeInput);
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
 	nodeInput.value = "Search";
-	nodeInput.setAttribute("onclick","retrieveReviews(searchInput.value)");
+	nodeInput.setAttribute("onclick","listResultsSearch(searchInput.value)");
 	nodeForm.appendChild(nodeInput);
 	
 	nodeDiv.appendChild(nodeForm);
@@ -115,24 +115,29 @@ function createRetrieveUser(id) {
 	nodeDiv.id = "tempDiv";
 	
 	var nodeHeader = document.createElement("h4");
-	var text = document.createTextNode("Search Users");
+	var text = document.createTextNode("Log In");
 	nodeHeader.appendChild(text);
 	
 	nodeDiv.appendChild(nodeHeader);
 	nodeDiv.appendChild(document.createElement("br"));
 	
 	var nodeForm = document.createElement("form");
+	nodeForm.setAttribute("onsubmit","return false;");
 	//var text = document.createTextNode("Enter a URL to save: ");
 	//nodeForm.appendChild(text);
+	text = document.createTextNode("Username");
+	nodeForm.appendChild(text); nodeForm.appendChild(document.createElement("br"));
 	var nodeInput = document.createElement("input");
 	nodeInput.type = "text";
-	nodeInput.id = "searchInput";
-	nodeInput.setAttribute("onsubmit","retrieveUsers(searchInput.value)");
-	nodeForm.appendChild(nodeInput);
+	nodeInput.id = "userInput";
+	nodeInput.setAttribute("onsubmit","retrieveUsers(userInput.value, passwordInput.value)");
+	nodeForm.appendChild(nodeInput); nodeForm.appendChild(document.createElement("br")); nodeForm.appendChild(document.createElement("br"));
+	text = document.createTextNode("Password");
+	nodeForm.appendChild(text); nodeForm.appendChild(document.createElement("br"));
 	nodeInput = document.createElement("input");
-	nodeInput.type = "button";
-	nodeInput.value = "Search";
-	nodeInput.setAttribute("onclick","retrieveUsers(searchInput.value)");
+	nodeInput.type = "text";
+	nodeInput.id = "passwordInput";
+	nodeInput.setAttribute("onclick","retrieveUsers(userInput.value, passwordInput.value)");
 	nodeForm.appendChild(nodeInput);
 	
 	nodeDiv.appendChild(nodeForm);
@@ -140,9 +145,8 @@ function createRetrieveUser(id) {
 	
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
-	nodeInput.setAttribute("onclick","retrieveUsersAll()");
-	nodeInput.value = "All";
-	
+	nodeInput.value = "Submit";
+	nodeInput.setAttribute("onclick","retrieveUsers(userInput.value, passwordInput.value)");
 	nodeDiv.appendChild(nodeInput);
 	
 	var nodePara = document.createElement("p");
@@ -362,10 +366,7 @@ function createWriteReview(id) {
 	
 	var nodeHeader = document.createElement("h5");
 	var tempStr;
-	if(userData == "unpopulated")
-		tempStr = "Not logged in";
-	else
-		tempStr = "Logged in as: " + userData[0].metric;
+	tempStr = "Logged in as: " + userData[0].metric;
 	var text = document.createTextNode(tempStr);
 	nodeHeader.appendChild(text);
 	
@@ -425,12 +426,75 @@ function createWriteReview(id) {
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
 	nodeInput.value = "Submit";
-	nodeInput.onclick = 'createFillinMetrics("tempDiv")';
 	nodeInput.setAttribute("onclick",'createFillinMetrics("tempDiv")');
 	nodeForm.appendChild(nodeInput);
 	
 	nodeDiv.appendChild(nodeForm);
 	nodeDiv.appendChild(document.createElement("br"));
+	
+
+	var replaced = document.getElementById(id);
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
+}
+function createEditReview(id) {
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodeForm;
+	var nodeInput;
+	var text;
+	
+	var nodeHeader = document.createElement("h4");
+	var text = document.createTextNode("Edit Review");
+	nodeHeader.appendChild(text);
+	
+	nodeDiv.appendChild(nodeHeader);
+	
+	if(userData == "unpopulated") {
+		var nodeHeader = document.createElement("h5");
+		var text = document.createTextNode("Log in to edit reviews");
+		nodeHeader.appendChild(text);
+		
+		nodeDiv.appendChild(nodeHeader);
+		nodeDiv.appendChild(document.createElement("br"));
+		
+		var replaced = document.getElementById(id);
+		replaced.parentNode.replaceChild(nodeDiv,replaced);
+		return;
+	}
+	
+	var nodeHeader = document.createElement("h5");
+	var tempStr;
+	tempStr = "Logged in as: " + userData[0].metric;
+	var text = document.createTextNode(tempStr);
+	nodeHeader.appendChild(text);
+	
+	nodeDiv.appendChild(nodeHeader);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeForm = document.createElement("form");
+	var text = document.createTextNode("Enter review name: ");
+	nodeForm.appendChild(text);
+	nodeInput = document.createElement("input");
+	nodeInput.id = "searchInput";
+	nodeInput.type = "text"; 
+	nodeInput.setAttribute("onsubmit","listResultsEdit(searchInput.value)");
+	nodeForm.appendChild(nodeInput);
+	nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Search";
+	nodeInput.setAttribute("onclick",'listResultsEdit(searchInput.value)');
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodePara = document.createElement("p");
+	var nodeSpan = document.createElement("span");
+	nodeSpan.id = "outputLinks";
+	nodePara.appendChild(nodeSpan);
+	
+	nodeDiv.appendChild(nodePara);
 	
 
 	var replaced = document.getElementById(id);
@@ -443,6 +507,20 @@ function createWriteReviewMetricCheckbox(nodeForm,metricName) {
 	nodeInput.type = "checkbox";
 	nodeInput.name = "metric";
 	nodeInput.value = metricName;
+	nodeForm.appendChild(nodeInput);
+	text = document.createTextNode(metricName);
+	nodeForm.appendChild(text);
+}
+function createEditReviewMetricCheckbox(nodeForm,metricName) {
+	var nodeInput;
+	var text;
+	nodeInput = document.createElement("input");
+	nodeInput.type = "checkbox";
+	nodeInput.name = "metric";
+	nodeInput.value = metricName;
+	var index = findIndexbyMetric(metricName);
+	if(reviewData[index].stars !== "0")
+		nodeInput.checked = "yes";
 	nodeForm.appendChild(nodeInput);
 	text = document.createTextNode(metricName);
 	nodeForm.appendChild(text);
@@ -721,6 +799,309 @@ function createFillinMetricsUser(id) {
 	var replaced = document.getElementById(id);
 	replaced.parentNode.replaceChild(nodeDiv,replaced);
 }
+function listResultsSearch(searchInput) {
+	retrieveReviews(searchInput);
+	
+	var nodeSpan = document.createElement("span");
+	nodeSpan.id = "outputLinks";
+	var nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = searchInput;
+	nodeInput.setAttribute("onclick","createNav();populateReview('reviewSection','Overall')");
+	nodeSpan.appendChild(nodeInput);
+	
+	var replaced = document.getElementById("outputLinks");
+	replaced.parentNode.replaceChild(nodeSpan,replaced);
+}
+function listResultsEdit(searchInput) {
+	retrieveReviews(searchInput);
+	
+	var nodeSpan = document.createElement("span");
+	nodeSpan.id = "outputLinks";
+	var text = document.createTextNode(searchInput + ": ");
+	nodeSpan.appendChild(text);
+	var nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Edit Metrics";
+	nodeInput.setAttribute("onclick","createEditMetrics();");
+	nodeSpan.appendChild(nodeInput);
+	/*nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Edit Text";
+	nodeInput.setAttribute("onclick","createEditText();");
+	nodeSpan.appendChild(nodeInput);*/
+	
+	var replaced = document.getElementById("outputLinks");
+	replaced.parentNode.replaceChild(nodeSpan,replaced);
+}
+function createEditMetrics() {
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodeForm;
+	var nodeInput;
+	var text;
+	
+	var nodeHeader = document.createElement("h4");
+	var text = document.createTextNode("Edit Metrics");
+	nodeHeader.appendChild(text);
+	
+	nodeDiv.appendChild(nodeHeader);
+	
+	if(userData == "unpopulated") {
+		var nodeHeader = document.createElement("h5");
+		var text = document.createTextNode("Log in to write reviews");
+		nodeHeader.appendChild(text);
+		
+		nodeDiv.appendChild(nodeHeader);
+		nodeDiv.appendChild(document.createElement("br"));
+		
+		var replaced = document.getElementById(id);
+		replaced.parentNode.replaceChild(nodeDiv,replaced);
+		return;
+	}
+	
+	var nodeHeader = document.createElement("h5");
+	var tempStr;
+	tempStr = "Logged in as: " + userData[0].metric;
+	var text = document.createTextNode(tempStr);
+	nodeHeader.appendChild(text);
+	
+	nodeDiv.appendChild(nodeHeader);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	text = document.createTextNode("Select metrics to review:");
+	nodeDiv.appendChild(text);
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodeForm = document.createElement("form");
+	nodeForm.setAttribute("onsubmit","return false;");
+	var nodeInput;
+	var text;
+	nodeInput = document.createElement("input");
+	nodeInput.type = "checkbox";
+	//nodeInput.name = "metric";
+	nodeInput.value = "All";
+	nodeInput.setAttribute("onclick","checkAll(this)");
+	nodeForm.appendChild(nodeInput);
+	text = document.createTextNode("All");
+	nodeForm.appendChild(text);
+	nodeForm.appendChild(document.createElement("br"));
+	nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Difficulty");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Graphics");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Atmosphere");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Atmosphere: Style");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Atmosphere: Setting");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Atmosphere: Sound");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Story");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Story: Pacing");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Story: Narrative");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Story: Consistency");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Story: Literary Merit");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Story: Characters");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Engine");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Engine: Physics");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Engine: Latency");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Systems");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Systems: UI");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Systems: Progress");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Gameplay");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Gameplay: AI");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Originality");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"As Promised");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Impact");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Value");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Value: Dollars");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Value: Time");nodeForm.appendChild(document.createElement("br"));
+	createEditReviewMetricCheckbox(nodeForm,"Value: Brainfood");nodeForm.appendChild(document.createElement("br"));
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeForm = document.createElement("form");
+	nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Submit";
+	nodeInput.setAttribute("onclick",'createEditText("tempDiv")');
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+
+	var replaced = document.getElementById("tempDiv");
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
+}
+function createEditText() {
+//THIS DOES NOT SAVE THE LAST METRIC
+	//Load review data
+	var checkboxes = document.getElementsByName("metric");
+	metrics = new Array();
+	var metric;
+	
+	metricI = new Object();
+	metricI.value = "Overall";
+	metricI.check = true;
+	var index = findIndexbyMetric("Overall");
+	metricI.stars = reviewData[index].stars;
+	metricI.text = reviewData[index].text;
+	metrics.push(metricI);
+	for(var iEveryCheckbox=0, n=checkboxes.length;iEveryCheckbox < n; iEveryCheckbox++) {
+		metricI = new Object();
+		metricI.value = checkboxes[iEveryCheckbox].value;
+		if(checkboxes[iEveryCheckbox].checked)
+			metricI.check = true;
+		else
+			metricI.check = false;
+		index = findIndexbyMetric(checkboxes[iEveryCheckbox].value);
+		metricI.stars = reviewData[index].stars;
+		metricI.text = reviewData[index].text;
+		metrics.push(metricI);
+	}
+	
+	//Create page
+	var nodeDiv = document.createElement("div");
+	nodeDiv.id = "tempDiv";
+	
+	var nodeTextarea;
+	var nodePara;
+	var nodeForm;
+	var nodeInput;
+	var nodeImage;
+	var text;
+	
+	nodeForm = document.createElement("form");
+	nodeInput = document.createElement("input");
+	nodeInput.type = "button";
+	nodeInput.value = "Submit";
+	nodeInput.setAttribute("onclick",'saveReview()');
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodePara = document.createElement("p");
+	nodePara.id = "outputTest";
+	
+	nodeDiv.appendChild(nodePara);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeForm = document.createElement("form");
+	text = document.createTextNode("Enter game title: ");
+	nodeForm.appendChild(text);
+	nodeInput = document.createElement("input");
+	nodeInput.type = "text";
+	nodeInput.value = reviewData[0].metric;
+	nodeInput.id = "gameTitleInput";
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	var nodeForm = document.createElement("form");
+	var text = document.createTextNode("Enter the URL of the game image: ");
+	nodeForm.appendChild(text);
+	var nodeInput = document.createElement("input");
+	nodeInput.type = "text";
+	nodeInput.value = reviewData[1].metric;
+	nodeInput.id = "gameImageUrlInput";
+	nodeForm.appendChild(nodeInput);
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	//Create the input for overall score
+	nodePara = document.createElement("p");
+	text = document.createTextNode(metrics[0].value);
+	nodePara.appendChild(text);
+	
+	nodeDiv.appendChild(nodePara);
+	
+	nodeImage = document.createElement("img");
+	nodeImage.id = "imageStar"+metrics[0].value;
+	nodeImage.src = "/GamePictures/" + metrics[0].stars + "outof10.png";
+	
+	nodeDiv.appendChild(nodeImage);
+	
+	nodeForm = document.createElement("form");
+	//nodeForm.id = metrics[0].value;
+	//nodeForm.setAttribute("data-stars",0);
+	for(var iEveryButton=0; iEveryButton<11; iEveryButton++) {
+		nodeInput = document.createElement("input");
+		nodeInput.type = "button";
+		nodeInput.value = iEveryButton;
+		nodeInput.setAttribute("data-metric",metrics[0].value);
+		nodeInput.setAttribute("onclick","changeStars(this.dataset.metric,this.value)");
+		nodeInput.id = "buttonStar"+metrics[0].value;
+		nodeForm.appendChild(nodeInput);
+	}
+	
+	nodeDiv.appendChild(nodeForm);
+	nodeDiv.appendChild(document.createElement("br"));
+	
+	nodeTextarea = document.createElement("textarea");
+	nodeTextarea.name = "metric";
+	nodeTextarea.id = metrics[0].value;
+	nodeTextarea.value = metrics[0].text;
+	nodeTextarea.setAttribute("data-stars",metrics[0].stars);
+	nodeTextarea.rows = 20;
+	nodeTextarea.cols = 50;
+	
+	nodeDiv.appendChild(nodeTextarea);
+		
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
+	//Create the input for each metric (overall score has already been processed)
+	for(var iEveryMetric=1, n=metrics.length;iEveryMetric < n; iEveryMetric++) {
+		if (metrics[iEveryMetric].check == false)
+			continue;
+			
+		nodePara = document.createElement("p");
+		text = document.createTextNode(metrics[iEveryMetric].value);
+		nodePara.appendChild(text);
+		
+		nodeDiv.appendChild(nodePara);
+		
+		nodeImage = document.createElement("img");
+		nodeImage.id = "imageStar"+metrics[iEveryMetric].value;
+		nodeImage.src = "/GamePictures/" + metrics[iEveryMetric].stars + "outof5.png";
+		
+		nodeDiv.appendChild(nodeImage);
+		
+		nodeForm = document.createElement("form");
+		//nodeForm.id = metrics[iEveryMetric].value;
+		//nodeForm.setAttribute("data-stars",0);
+		for(var iEveryButton=0; iEveryButton<6; iEveryButton++) {
+			nodeInput = document.createElement("input");
+			nodeInput.type = "button";
+			nodeInput.value = iEveryButton;
+			nodeInput.setAttribute("data-metric",metrics[iEveryMetric].value);
+			nodeInput.setAttribute("onclick","changeStars(this.dataset.metric,this.value)");
+			nodeInput.id = "buttonStar"+metrics[iEveryMetric].value;
+			nodeForm.appendChild(nodeInput);
+		}
+		
+		nodeDiv.appendChild(nodeForm);
+		nodeDiv.appendChild(document.createElement("br"));
+		
+		nodeTextarea = document.createElement("textarea");
+		nodeTextarea.name = "metric";
+		nodeTextarea.id = metrics[iEveryMetric].value;
+		nodeTextarea.value = metrics[iEveryMetric].text;
+		nodeTextarea.setAttribute("data-stars",metrics[iEveryMetric].stars);
+		nodeTextarea.rows = 20;
+		nodeTextarea.cols = 50;
+		
+		nodeDiv.appendChild(nodeTextarea);
+	}
+	
+	nodeDiv.appendChild(document.createElement("br"));nodeDiv.appendChild(document.createElement("br"));
+	
+	
+	var replaced = document.getElementById("tempDiv");
+	replaced.parentNode.replaceChild(nodeDiv,replaced);
+}
 function saveReview() {
 	var ch29 = String.fromCharCode(29);
 	var ch30 = String.fromCharCode(30);
@@ -874,7 +1255,7 @@ function processReviewData(processData) {
 	var tempArray = new Array();
 	var tempData;
 	var metricData;
-	for(var iEveryMetric=0, n=processReviewData.length-1;iEveryMetric<n;iEveryMetric++) {	//the -1 in length skips the last element, which is a waste element
+	for(var iEveryMetric=0, n=processReviewData.length;iEveryMetric<n;iEveryMetric++) {	//the -1 in length skips the last element, which is a waste element
 		metricData = new Object();
 		tempData = processReviewData[iEveryMetric].split(ch30);
 		metricData.metric = tempData[0];
@@ -893,7 +1274,7 @@ function processReviewData(processData) {
 	var tempArray = new Array();
 	var tempData;
 	var metricData;
-	for(var iEveryMetric=0, n=processUserData.length-1;iEveryMetric<n;iEveryMetric++) {
+	for(var iEveryMetric=0, n=processUserData.length;iEveryMetric<n;iEveryMetric++) {
 		metricData = new Object();
 		tempData = processUserData[iEveryMetric].split(ch30);
 		metricData.metric = tempData[0];
@@ -1065,7 +1446,6 @@ function createUser(id) {
 	nodeInput = document.createElement("input");
 	nodeInput.type = "button";
 	nodeInput.value = "Submit";
-	nodeInput.onclick = 'createFillinMetrics("tempDiv")';
 	nodeInput.setAttribute("onclick",'createFillinMetricsUser("tempDiv")');
 	nodeForm.appendChild(nodeInput);
 	
@@ -1178,6 +1558,8 @@ Main</li>
 Search Reviews</li>
 <li class="menuButton" onclick="createWriteReview(&quot;tempDiv&quot;)">
 Write Review</li>
+<li class="menuButton" onclick="createEditReview(&quot;tempDiv&quot;)">
+Edit Review</li>
 <li class="menuButton" onclick="createUser(&quot;tempDiv&quot;)">
 Create User
 </li>

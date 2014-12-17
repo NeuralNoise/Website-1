@@ -1,5 +1,5 @@
 body {
-	background-color: #f9daa0;
+	background-color: #ccc7c7;
 }
 
 h2 {
@@ -16,7 +16,7 @@ h3 {
 }
 
 .nav {
-	background-color: #eec881;
+	background-color: #c5b0b0;
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
@@ -45,7 +45,7 @@ h3 {
 }
 
 nav {
-	background-color: #eec881;
+	background-color: #c5b0b0;
 	padding: 5px;
 	line-height:20px;
 	width:200px;
